@@ -1,6 +1,6 @@
 # bat
 ## Logo Here
-[![(/layer2.png)]]
+[![(/Layer-2.png)]]
 ## Language Name: CODING WITH BRIAN
 ## Introduction
 ## List of Features
