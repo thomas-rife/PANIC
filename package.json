@@ -3,11 +3,17 @@
   "version": "1.0.0",
   "description": "TODO",
   "type": "module",
-  "main": "index.js",
+  "main": "bat.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "c8 node --test tests/**/*.test.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "thomasrife, awetterau, bbowers2",
+  "license": "ISC",
+  "dependencies": {
+    "ohm-js": "^17.1.0"
+  },
+  "devDependencies": {
+    "c8": "^10.1.3"
+  }
 }
