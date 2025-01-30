@@ -1,11 +1,11 @@
 {
-  "name": "bat",
+  "name": "panic",
   "version": "1.0.0",
   "description": "TODO",
   "type": "module",
-  "main": "bat.js",
+  "main": "src/panic.js",
   "scripts": {
-    "test": "c8 node --test tests/**/*.test.js"
+    "test": "c8 node --test test/**/*.test.js"
   },
   "keywords": [],
   "author": "thomasrife, awetterau, bbowers2",
