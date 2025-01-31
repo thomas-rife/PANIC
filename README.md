@@ -83,7 +83,8 @@ f compare_numbers(a, b):  # Function Definition
     p a, "is greater than", b
   elif a < b:
     p a, "is less than", b
-  r a == b: p a, "is equal to", b
+  else a=b:
+    p a, "is equal to", b
 
 n1: 10 # variable assignment
 n2: 20
@@ -123,7 +124,7 @@ compareNumbers(n1, n2);
 f fibonacci(n):
   a: 0  # Initialize starting values
   b: 1
-  l i in [0…n]:  # Loop from 0 to n
+  l i in [0...n]:  # Loop from 0 to n
     p a, end=" "
     a, b: b, a + b
   r # return
@@ -162,9 +163,9 @@ fibonacci(numTerms);
 
 ```PANIC
 f factorial(n):
-  if n = 0
+  if n = 0:
       r 1
-  r n*factorial n-1
+  r n*factorial(n-1)
 
   p factorial(5)
 ```
@@ -192,8 +193,8 @@ console.log(factorial(5));
 <td>
 
 ```PANIC
-l i in [1...5]
-  l j in i
+l i in [1...5]:
+  l j in i:
     p "*" end=" "
       pl
 ```
