@@ -8,14 +8,14 @@
 
 ## List of Features
 
-  - We wanted to target students, and people who want to focus on programming and not syntactic sugar that many languages like to use. There are very shorthand, single letter ways to write common statements, including declaring functions as "f", return being "r" and so on.
+  - We wanted to target students, and people who want to focus on programming and not syntactic sugar that many languages like to use. There are very shorthand, single letter ways to write common statements, including declaring functions as `f`, return being `r` and so on.
   - We wanted the language to focus on scripting speed above all, abbreviations and easy shortcuts are going to make this language quick to write and fast to debug.
-  - We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as pr and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
-  - We loved how Swift handled range in loops and wanted to do so something similar. We settled on the ... operator to show the range of a loop. 
+  - We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as `pr` and `print` both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
+  - We loved how Swift handled range in loops and wanted to do so something similar. We settled on the `...` operator to show the range of a loop. 
 
 ## Example Programs
 
-### Ex #1 Factorial With Tail Recursion
+### Example 1: Factorial With Tail Recursion
 
 ### Anonymous Functions
 
@@ -48,7 +48,7 @@ console.log(x);
 </td>
 </table>
 
-### Hello World
+### Example 2: Hello World
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -70,7 +70,7 @@ console.log("Hello, World!");
 </td>
 </table>
 
-### Comparison function
+### Example 3: Comparison function
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -82,7 +82,7 @@ f compare_numbers(a, b):  # function definition
   if a > b:
     p a, "is greater than", b
   elif a < b:
-    pr(a, "is less than", b)
+    p a, "is less than", b
   r a == b: p a, "is equal to", b
 
 n1 = 10 #variable assignment
@@ -112,7 +112,7 @@ compareNumbers(n1, n2);
 </td>
 </table>
 
-### Fibonacci
+### Example 4: Fibonacci
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -136,7 +136,7 @@ fibonacci(num_terms)
 <td>
 
 ```javascript
-unction fibonacci(n) {
+function fibonacci(n) {
     let a = 0, b = 1;
     for (let i = 0; i < n; i++) {
         console.log(a);
@@ -153,13 +153,15 @@ fibonacci(numTerms);
 </td>
 </table>
 
+### Example 5: Factorials
+
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
 </tr>
 <td>
 
 ```PANIC
-f factorial n
+f factorial(n):
   if n = 0
       r 1
   r n*factorial n-1
@@ -182,7 +184,7 @@ console.log(factorial(5));
 </td>
 </table>
 
-## Recursive looping
+### Example 6: Recursive looping
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
