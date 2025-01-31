@@ -25,13 +25,13 @@
 <td>
 
 ```PANIC
-f x r x + 1
+d: x => x + 1
 
 b: [1...7, +2]
 
-b -> f -> p
+b -> d -> p
 
-\\ or p <- f <- b
+\\ or p <- d <- b
 
 ```
 
@@ -39,9 +39,9 @@ b -> f -> p
 <td>
 
 ```javascript
-f = (x) => x + 1;
+d = (x) => x + 1;
 b = [1, 3, 5, 7];
-x = b.map(f);
+x = b.map(d);
 console.log(x);
 ```
 
