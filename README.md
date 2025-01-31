@@ -85,8 +85,8 @@ f compare_numbers(a, b):  # function definition
     p a, "is less than", b
   r a == b: p a, "is equal to", b
 
-n1 = 10 #variable assignment
-n2 = 20
+n1: 10 # variable assignment
+n2: 20
 compare_numbers(n1, n2)  # Call the function
 ```
 
@@ -121,8 +121,8 @@ compareNumbers(n1, n2);
 
 ```PANIC
 f fibonacci(n):
-  a = 0  # Initialize starting values
-  b = 1
+  a: 0  # Initialize starting values
+  b: 1
   l i in [0…n]:  # Loop from 0 to n
     p a, end=" "
     a, b = b, a + b
@@ -166,7 +166,7 @@ f factorial(n):
       r 1
   r n*factorial n-1
 
-  p factorial 5
+  p factorial(5)
 ```
 </td>
 <td>
