@@ -20,15 +20,36 @@
 
 ## Example Programs
 
-### Functions
 
-| PANIC     |     JS     |
-| :-------: | : -------: |
-| Blah      | Blah       |
+
+
+### Ex #1 Factorial With Tail Recursion
+
+
+### Anonymous Functions
+<table>
+<tr> <th>PANIC</th><th>JS</th><tr>
+</tr>
+<td>
+
+```PANIC
+f x r x + 1
+
+b: [1...7, +2]
+
+b -> f -> p
+
+\\ or p <- f <- b
 
 ```
-{
-  "blah": 10,
-  "Blah": num_times
-}
+</td>
+<td>
+
+```javascript
+f = (x) => x + 1
+b = [1, 3, 5, 7]
+x = b.map(f);
+console.log(x)
 ```
+</td>
+</table>
