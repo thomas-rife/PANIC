@@ -195,7 +195,7 @@ console.log(factorial(5));
 ```PANIC
 l i in [1...5]:
   l j in i:
-    p "*" end=" "
+    p "*", end=" "
       pl
 ```
 </td>
