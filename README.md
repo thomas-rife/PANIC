@@ -1,8 +1,6 @@
 # PANIC
 
-## Logo Here
-
-## Language Name: PANIC
+![alt text](docs/logo.png)
 
 ## Introduction
 
@@ -21,3 +19,16 @@
 - Determine your concurrency model. Do you want all your programs to be single-threaded and sequential? Or are you looking for something event-driven and async? Or multithreaded? Or distributed?
 
 ## Example Programs
+
+### Functions
+
+| PANIC     |     JS     |
+| :-------: | : -------: |
+| Blah      | Blah       |
+
+```
+{
+  "blah": 10,
+  "Blah": num_times
+}
+```
