@@ -8,7 +8,7 @@
     "test": "c8 node --test test/**/*.test.js"
   },
   "keywords": [],
-  "author": "thomasrife, awetterau, bbowers2",
+  "author": "thomasrife, awetterau, bbowers2, walter-camposs",
   "license": "ISC",
   "dependencies": {
     "ohm-js": "^17.1.0"

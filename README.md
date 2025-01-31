@@ -20,13 +20,10 @@
 
 ## Example Programs
 
-
-
-
 ### Ex #1 Factorial With Tail Recursion
 
-
 ### Anonymous Functions
+
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
 </tr>
@@ -42,14 +39,121 @@ b -> f -> p
 \\ or p <- f <- b
 
 ```
+
 </td>
 <td>
 
 ```javascript
-f = (x) => x + 1
-b = [1, 3, 5, 7]
+f = (x) => x + 1;
+b = [1, 3, 5, 7];
 x = b.map(f);
-console.log(x)
+console.log(x);
 ```
+
+</td>
+</table>
+
+### Hello World
+
+<table>
+<tr> <th>PANIC</th><th>JS</th><tr>
+</tr>
+<td>
+
+```PANIC
+pr("Hello, World!") # Print a message
+
+```
+
+</td>
+<td>
+
+```javascript
+console.log("Hello, World!");
+```
+
+</td>
+</table>
+
+### Comparison function
+
+<table>
+<tr> <th>PANIC</th><th>JS</th><tr>
+</tr>
+<td>
+
+```PANIC
+f compare_numbers(a, b):  # function definition
+  if a > b:
+    pr(a, "is greater than", b)
+  elif a < b:
+    pr(a, "is less than", b)
+  r a == b: pr(a, "is equal to", b)
+
+n1 = 10 #variable assignment
+n2 = 20
+compare_numbers(n1, n2)  # Call the function
+```
+
+</td>
+<td>
+
+```javascript
+function compareNumbers(a, b) {
+  if (a > b) {
+    console.log(a + " is greater than " + b);
+  } else if (a < b) {
+    console.log(a + " is less than " + b);
+  } else {
+    console.log(a + " is equal to " + b);
+  }
+}
+
+let n1 = 10;
+let n2 = 20;
+compareNumbers(n1, n2);
+```
+
+</td>
+</table>
+
+### Fibonacci
+
+<table>
+<tr> <th>PANIC</th><th>JS</th><tr>
+</tr>
+<td>
+
+```PANIC
+f fibonacci(n):
+  a = 0  # Initialize starting values
+  b = 1
+  l i in [0…n]:  # Loop from 0 to n
+    pr(a, end=" ")
+    a, b = b, a + b
+  r # return
+
+num_terms = 10
+fibonacci(num_terms)
+```
+
+</td>
+<td>
+
+```javascript
+unction fibonacci(n) {
+    let a = 0, b = 1;
+    for (let i = 0; i < n; i++) {
+        console.log(a);
+        let next = a + b;
+        a = b;
+        b = next;
+    }
+}
+
+let numTerms = 10;
+fibonacci(numTerms);
+```
+
 </td>
 </table>
