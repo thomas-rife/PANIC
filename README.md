@@ -10,8 +10,8 @@
 
   - We wanted to target students, and people who want to focus on programming and not syntactic sugar that many languages like to use. There are very shorthand, single letter ways to write common statements, including declaring functions as "f", return being "r" and so on.
   - We wanted the language to focus on scripting speed above all, abbreviations and easy shortcuts are going to make this language quick to write and fast to debug.
-  - We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as pr and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
-  - We loved how Swift handled range in loops and wanted to do so something similar. We settled on the ... operator to show the range of a loop. 
+  - We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as p and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
+  - We took several aspects of other languages that we liked and incorporated their ideas into our language, for example we loved how Swift handled range in loops and wanted to do so something similar. We settled on the ... operator to show the range of a loop. Also, we tried to avoid other common practices which to us didn't make sense, such as the == sign.
 
 ## Example Programs
 
