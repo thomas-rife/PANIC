@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "thomasrife, awetterau, bbowers2, walter-camposs",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "ohm-js": "^17.1.0"
   },
