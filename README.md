@@ -163,7 +163,7 @@ fibonacci(numTerms);
 
 ```PANIC
 f factorial(n):
-  if n = 0:
+  if n = 0 or n = 1:
       r 1
   r n*factorial(n-1)
 
