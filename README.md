@@ -15,9 +15,7 @@
 
 ## Example Programs
 
-### Example 1: Factorial With Tail Recursion
-
-### Anonymous Functions
+### Example 1: Anonymous Functions, Range and Maps
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
