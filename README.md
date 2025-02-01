@@ -100,7 +100,7 @@ In PANIC `l` stands for loop and it is used both for whiles and for loops. We us
 <td>
 
 ```PANIC
-f fibonacci(n):
+f fibonacci(int n):
   a: 0  # Initialize starting values
   b: 1
   l i in [0...n]:  # Loop from 0 to n 
@@ -143,7 +143,7 @@ Here we have to declare a return type for the function factorial. Also, `or` is 
 <td>
 
 ```PANIC
-f factorial(n) -> int:
+f factorial(int n) -> int:
   if n = 0 or n = 1
     r 1
   r n*factorial(n-1)

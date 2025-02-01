@@ -1,4 +1,4 @@
-f fibonacci(n):
+f fibonacci(int n):
   a: 0  # Initialize starting values
   b: 1
   l i in [0...n]:  # Loop from 0 to n 
