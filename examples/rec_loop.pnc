@@ -1,0 +1,4 @@
+l i in [1...5]:
+  l j in i:
+    p "*", end=" "
+      pl

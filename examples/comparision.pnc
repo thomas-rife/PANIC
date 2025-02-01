@@ -1,0 +1,12 @@
+f compare_numbers(int a, int b):  # Function Definition
+  if a = b
+    pl a, "is equal to", b
+  elif a < b
+    pl a, "is less than", b
+  else
+    pl a, "is greater than", b
+
+
+n1: 10 # variable assignment
+n2: 20
+compare_numbers(n1, n2)  # Call the function
