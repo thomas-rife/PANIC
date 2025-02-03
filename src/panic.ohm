@@ -1,4 +1,4 @@
-Cassowary {
+PANIC {
   Program   = Stmt+
   Stmt      = VarDec
             | PrintStmt
@@ -25,7 +25,7 @@ Cassowary {
   else      = "else" ~idchar
   break     = "break" ~idchar
   keyword   = print | while | if | else | break | let
-  id        = ~keyword letter idchar*
+  id        = ~keyword letter idchar* // Id is followed by NOT a keyword (lookahead)
   idchar    = letter | digit | "_"
   numeral   = digit+
 }

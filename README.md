@@ -8,13 +8,13 @@
 
 ## List of Features
 
-  - We wanted to target students, and people who want to focus on programming and not syntactic sugar that many languages like to use. There are very shorthand, single-letter ways to write common statements, including declaring functions as `f`, return being `r`, and so on.
-  - We wanted the language to focus on scripting speed above all, abbreviations and easy shortcuts are going to make this language quick to write and fast to debug.
-  - We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as p and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
-  - We took several aspects of other languages that we liked and incorporated their ideas into our language, for example we loved how Swift handled range in loops and wanted to do so something similar. We settled on the `...` operator to show the range of a loop. Also, we tried to avoid other common practices which to us didn't make sense, such as the `==` sign.
-  - Strong statically typed language, very similar to Swift's type stystem.
-  - Keyword and positional arguments as well as rest parameters.
-  - First-class functions with support for functional programming, both function composition and pipelining written with either a left or right arrow.
+- We wanted to target students, and people who want to focus on programming and not syntactic sugar that many languages like to use. There are very shorthand, single-letter ways to write common statements, including declaring functions as `f`, return being `r`, and so on.
+- We wanted the language to focus on scripting speed above all, abbreviations and easy shortcuts are going to make this language quick to write and fast to debug.
+- We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as p and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
+- We took several aspects of other languages that we liked and incorporated their ideas into our language, for example we loved how Swift handled range in loops and wanted to do so something similar. We settled on the `...` operator to show the range of a loop. Also, we tried to avoid other common practices which to us didn't make sense, such as the `==` sign.
+- Strong statically typed language, very similar to Swift's type stystem.
+- Keyword and positional arguments as well as rest parameters.
+- First-class functions with support for functional programming, both function composition and pipelining written with either a left or right arrow.
 
 ## Example Programs
 
@@ -41,8 +41,6 @@ console.log("Hello, World!");
 
 </td>
 </table>
-
-
 
 ### Example 1: Comparision function
 
@@ -92,7 +90,7 @@ compareNumbers(n1, n2);
 
 ### Example 2: Fibonacci
 
-In PANIC `l` stands for loop and it is used both for whiles and for loops. We use the `...` for shorthand notation to make ranges. Ranges start from the first number and include the last number, but don't go above it. 
+In PANIC `l` stands for loop and it is used both for whiles and for loops. We use the `...` for shorthand notation to make ranges. Ranges start from the first number and include the last number, but don't go above it.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -103,7 +101,7 @@ In PANIC `l` stands for loop and it is used both for whiles and for loops. We us
 f fibonacci(int n):
   a: 0  # Initialize starting values
   b: 1
-  l i in [0...n]:  # Loop from 0 to n 
+  l i in [0...n]:  # Loop from 0 to n
     p a, end=" "
     a, b: b, a + b
   r # return
@@ -117,13 +115,14 @@ fibonacci(num_terms)
 
 ```javascript
 function fibonacci(n) {
-    let a = 0, b = 1;
-    for (let i = 0; i < n; i++) {
-        console.log(a);
-        let next = a + b;
-        a = b;
-        b = next;
-    }
+  let a = 0,
+    b = 1;
+  for (let i = 0; i < n; i++) {
+    console.log(a);
+    let next = a + b;
+    a = b;
+    b = next;
+  }
 }
 
 let numTerms = 10;
@@ -135,7 +134,7 @@ fibonacci(numTerms);
 
 ### Example 3: Factorials with tail recursion
 
-Here we have to declare a return type for the function factorial. Also, `or` is spelled out instead of being `||`. 
+Here we have to declare a return type for the function factorial. Also, `or` is spelled out instead of being `||`.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -150,25 +149,27 @@ f factorial(int n) -> int:
 
   p factorial(5)
 ```
+
 </td>
 <td>
 
 ```javascript
 function factorial(n) {
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  return n*factorial(n-1);
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  return n * factorial(n - 1);
 }
 
 console.log(factorial(5));
 ```
+
 </td>
 </table>
 
 ### Example 4: Recursive looping
 
-In PANIC arguments to a function can either be positional or keyword. Positional arguments come first, then keyword args, and  `...` is used to collect the rest of the arguments into an array. Here we utilize keyword arguments by calling print with `end=" "`.
+In PANIC arguments to a function can either be positional or keyword. Positional arguments come first, then keyword args, and `...` is used to collect the rest of the arguments into an array. Here we utilize keyword arguments by calling print with `end=" "`.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -181,18 +182,20 @@ l i in [1...5]:
     p "*", end=" "
       pl
 ```
+
 </td>
 <td>
 
 ```javascript
 for (let i = 1; i <= 5; i++) {
-  let row = "";
-  for (let j=1; j<=i; j++) {
-    row += "* ";
-  }
-  console.log(row);
+  let row = "";
+  for (let j = 1; j <= i; j++) {
+    row += "* ";
+  }
+  console.log(row);
 }
 ```
+
 </td>
 </table>
 
