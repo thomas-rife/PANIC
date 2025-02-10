@@ -4,19 +4,31 @@ PANIC {
             | PrintStmt
             | WhileStmt
             | IfStmt
-            | break ";"               --break
+            | break ";"                   --break
             | AssignmentStmt
-            | "++" id ";"             --increment
+            | "++" Primary_id ";"             --increment
   VarDec    = let id "=" Exp ";"
   PrintStmt = print Exp ";"
-  AssignmentStmt = id "=" Exp ";"
+  AssignmentStmt = Primary_id "=" Exp ";"
   IfStmt    = if Exp Block (else (Block | IfStmt))?
   WhileStmt = while Exp Block
   Block     = "{" Stmt* "}"
   
-  Exp       = numeral
-            | id
-            | "(" Exp ")"             --parens
+  Exp       = Condition relop Condition   --test
+            | Condition
+  Condition = Exp "+" Term         --add
+            | Exp "-" Term         --sub
+            | Term
+  Term      = Term "*" Factor      --mul
+            | Term "/" Factor      --div
+            | Term "%" Factor      --mod
+            | Factor
+  Factor    = Primary ("**") Factor      --exp
+            | "-" Primary                --neg
+            | Primary
+  Primary   = numeral
+            | id                         --id
+            | "(" Exp ")"                --parens
   
   let       = "let" ~idchar
   print     = "print" ~idchar
@@ -25,7 +37,8 @@ PANIC {
   else      = "else" ~idchar
   break     = "break" ~idchar
   keyword   = print | while | if | else | break | let
-  id        = ~keyword letter idchar* // Id is followed by NOT a keyword (lookahead)
+  id        = ~keyword letter idchar*
   idchar    = letter | digit | "_"
-  numeral   = digit+
+  numeral   = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
+  relop     = "<=" | "<" | "==" | "!=" | ">=" | ">"
 }
