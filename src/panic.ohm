@@ -4,7 +4,7 @@ PANIC {
             | PrintStmt
             | WhileStmt
             | IfStmt
-            | break ";"                   --break
+            | break ";"                       --break
             | AssignmentStmt
             | "++" Primary_id ";"             --increment
   VarDec    = let id "=" Exp ";"
@@ -42,3 +42,5 @@ PANIC {
   numeral   = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
   relop     = "<=" | "<" | "==" | "!=" | ">=" | ">"
 }
+
+// basic, but pretty decent language. We need to add function calls and we can call it a day
