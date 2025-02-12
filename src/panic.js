@@ -1,12 +1,15 @@
 // PANIC Compiler
 
+// PANIC is a completely statically typed language
+// pretty much everything at compile time
+
 import * as fs from "fs";
 import parse from "./parser.js";
 import translate from "./translator.js";
 
 // Read the contents of the file grammar.ohm into a string
 if (process.argv.length !== 3) {
-  console.error("Usage: node src/panic.js FILENAME");
+  console.error("Usage: node src/panic.js <FILENAME>");
   process.exit(1);
 }
 
@@ -14,7 +17,6 @@ try {
   // synax
   const sourceCode = fs.readFileSync(process.argv[2], "utf8");
   const match = parse(sourceCode);
-  // semantics
   const target = translate(match);
   console.log(target.join("\n"));
 } catch (e) {

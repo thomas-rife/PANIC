@@ -1,9 +1,11 @@
 // panic interpreter
 
+import { parse } from "node:path";
+
 export default function translate(match) {
   const grammar = match.matcher.grammar;
 
-  const locals = new Map();
+  const locals = new Map(); // string -> entity
   const target = [];
 
   function emit(line) {
@@ -19,6 +21,26 @@ export default function translate(match) {
     }
   }
 
+  function checkNumber(exp, parseTreeNode) {
+    check(e.type === "number", "Expected a number", parseTreeNode);
+  }
+
+  function checkBoolean(exp, parseTreeNode) {
+    check(e.type === "boolean", "Expected a boolean", parseTreeNode);
+  }
+
+  function checkDeclared(name, parseTreeNode) {
+    check(locals.has(name), `Variable ${name} is not declared`, parseTreeNode);
+  }
+
+  function checkNotDeclared(name, parseTreeNode) {
+    check(
+      !locals.has(name),
+      `Variable ${name} is already declared`,
+      parseTreeNode
+    );
+  }
+
   const translator = grammar.createSemantics().addOperation("translate", {
     Program(statements) {
       for (const statement of statements.children) {
@@ -30,12 +52,17 @@ export default function translate(match) {
       emit(`${variable}++;`);
     },
     VarDec(_let, id, _eq, exp, _semi) {
-      check(
-        !locals.has(id.sourceString),
-        `Variable ${id.sourceString} already declared`,
-        id
-      );
+      checkNotDeclared(id.sourceString, id);
       const initializer = exp.translate();
+      const variable = {
+        kind: "variable",
+        name: id.sourceString,
+        mutable: true,
+        type: initializer.type,
+        toString() {
+          return this.name;
+        },
+      };
       locals.set(id.sourceString, "number");
       emit(`let ${id.sourceString} = ${initializer};`);
     },
@@ -49,6 +76,8 @@ export default function translate(match) {
     },
     WhileStmt(_while, exp, block) {
       // translateuate test and then start executing body
+
+      checkBoolean(test, exp);
       emit(`while (${exp.translate()}) {`);
       block.translate();
       emit("}");
@@ -67,57 +96,64 @@ export default function translate(match) {
       // this checks first if our panic operator has two equals and pairs it with JS triple and so on
       targetOp =
         { "==": "===", "!=": "!==" }[op.sourceString] || op.sourceString;
-      return `${left.translate()} ${op.sourceString} ${right.translate()}`;
-
-      // switch (
-      //   // in the compiler, we return the text of it, run the JS translation
-      //   op.sourceString
-      // ) {
-      //   case "<":
-      //     return `${left.translate()} < ${right.translate()}`;
-      //   case ">":
-      //     return `${left.translate()} > ${right.translate()}`;
-      //   case "<=":
-      //     return `${left.translate()} <= ${right.translate()}`;
-      //   case ">=":
-      //     return `${left.translate()} >= ${right.translate()}`;
-      //   case "==":
-      //     return `${left.translate()} === ${right.translate()}`;
-      //   case "!=":
-      //     return `${left.translate()} !== ${right.translate()}`;
-      //   default:
-      //     throw new Error(`What are you doing? There is no ${op.sourceString}`);
-      // }
+      return `(${left.translate()} ${op.sourceString} ${right.translate()})`;
     },
     Condition_add(left, _op, right) {
-      return left.translate() + right.translate();
+      const x = left.translate();
+      const y = right.translate();
+
+      checkNumber(x, left);
+      checkNumber(y, right);
+
+      return {
+        type: "number",
+        toString() {
+          return `(${x} + ${y})`;
+        },
+      };
     },
     Condition_sub(left, _op, right) {
-      return left.translate() - right.translate();
+      return `(${left.translate() - right.translate()})`;
     },
     Term_mul(left, _op, right) {
-      return left.translate() * right.translate();
+      return `(${left.translate() * right.translate()})`;
     },
+
     Term_div(left, _op, right) {
-      return left.translate() / right.translate();
+      return `(${left.translate() / right.translate()})`;
     },
     Term_mod(left, _op, right) {
-      return left.translate() % right.translate();
+      return `(${left.translate() % right.translate()})`;
     },
     Primary_parens(_open, exp, _close) {
-      return exp.translate();
+      return `(${exp.translate()})`;
     },
     numeral(digits, _dot, _fractional, _e, _sign, _exponent) {
       return Number(this.sourceString);
     },
+    factor_neg(_op, right) {
+      return `-(${right.translate()})`;
+    },
+    factor_exp(_op, right) {
+      return `(${left.translate()}${right.translate()})`;
+    },
     id(_first, _rest) {
-      const name = this.sourceString;
-      // need to check if variable has been declared using check function
-      check(locals.has(name), `Variable ${name} is not declared`, this);
-      return name;
+      const entity = locals.get(this.sourceString);
+      checkDeclared(this.sourceString, this);
+      return entity;
+    },
+    true(_) {
+      return true; // type declared on line 156 Boolean.prototype.type = "boolean";
+    },
+    false(_) {
+      return false; // type declared on line 156 Boolean.prototype.type = "boolean";
     },
   });
 
   translator(match).translate();
   return target;
 }
+
+Number.prototype.type = "number";
+Boolean.prototype.type = "boolean";
+String.prototype.type = "string";
