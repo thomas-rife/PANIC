@@ -1,7 +1,3 @@
-// panic interpreter
-
-import { parse } from "node:path";
-
 export default function translate(match) {
   const grammar = match.matcher.grammar;
 
@@ -14,31 +10,30 @@ export default function translate(match) {
 
   function check(condition, message, parseTreeNode) {
     if (!condition) {
-      // if condition doesn't pass, throw an error
       throw new Error(
         `${parseTreeNode.source.getLineAndColumnMessage()} ${message}`
       );
     }
   }
 
-  function checkNumber(exp, parseTreeNode) {
-    check(e.type === "number", "Expected a number", parseTreeNode);
+  function checkNumber(e, parseTreeNode) {
+    check(e.type === "number", `Expected number`, parseTreeNode);
   }
 
-  function checkBoolean(exp, parseTreeNode) {
-    check(e.type === "boolean", "Expected a boolean", parseTreeNode);
-  }
-
-  function checkDeclared(name, parseTreeNode) {
-    check(locals.has(name), `Variable ${name} is not declared`, parseTreeNode);
+  function checkBoolean(e, parseTreeNode) {
+    check(e.type === "boolean", `Expected boolean`, parseTreeNode);
   }
 
   function checkNotDeclared(name, parseTreeNode) {
     check(
       !locals.has(name),
-      `Variable ${name} is already declared`,
+      `Variable already declared: ${name}`,
       parseTreeNode
     );
+  }
+
+  function checkDeclared(name, parseTreeNode) {
+    check(locals.has(name), `Undeclared variable: ${name}`, parseTreeNode);
   }
 
   const translator = grammar.createSemantics().addOperation("translate", {
@@ -50,6 +45,9 @@ export default function translate(match) {
     Stmt_increment(_op, id, _semi) {
       const variable = id.translate();
       emit(`${variable}++;`);
+    },
+    Stmt_break(_break, _semi) {
+      emit("break;");
     },
     VarDec(_let, id, _eq, exp, _semi) {
       checkNotDeclared(id.sourceString, id);
@@ -63,28 +61,23 @@ export default function translate(match) {
           return this.name;
         },
       };
-      locals.set(id.sourceString, "number");
-      emit(`let ${id.sourceString} = ${initializer};`);
+      locals.set(id.sourceString, variable);
+      emit(`let ${variable.name} = ${initializer};`);
     },
     PrintStmt(_print, exp, _semi) {
-      emit(`print(${exp.translate()});`);
+      emit(`console.log(${exp.translate()});`);
     },
     AssignmentStmt(id, _eq, exp, _semi) {
       const value = exp.translate();
-      const variable = id.translate(); // Call id translate to check if the variable exists
+      const variable = id.translate();
       emit(`${variable} = ${value};`);
     },
     WhileStmt(_while, exp, block) {
-      // translateuate test and then start executing body
-
+      const test = exp.translate();
       checkBoolean(test, exp);
-      emit(`while (${exp.translate()}) {`);
+      emit(`while (${test}) {`);
       block.translate();
       emit("}");
-    },
-    Stmt_break(_break, _semi) {
-      // how do we interpret breaks? functions are similar; how do we do a return?
-      emit("break;");
     },
     Block(_open, statements, _close) {
       for (const statement of statements.children) {
@@ -92,19 +85,15 @@ export default function translate(match) {
       }
     },
     Exp_test(left, op, right) {
-      // we could return just the operator, but our language has different versions of the same JS operators
-      // this checks first if our panic operator has two equals and pairs it with JS triple and so on
-      targetOp =
-        { "==": "===", "!=": "!==" }[op.sourceString] || op.sourceString;
-      return `(${left.translate()} ${op.sourceString} ${right.translate()})`;
+      const targetOp =
+        { "==": "===", "!=": "!==" }?.[op.sourceString] ?? op.sourceString;
+      return `(${left.translate()} ${targetOp} ${right.translate()})`;
     },
     Condition_add(left, _op, right) {
       const x = left.translate();
       const y = right.translate();
-
       checkNumber(x, left);
       checkNumber(y, right);
-
       return {
         type: "number",
         toString() {
@@ -113,29 +102,28 @@ export default function translate(match) {
       };
     },
     Condition_sub(left, _op, right) {
-      return `(${left.translate() - right.translate()})`;
+      return `(${left.translate()} - ${right.translate()})`;
     },
     Term_mul(left, _op, right) {
-      return `(${left.translate() * right.translate()})`;
+      return `(${left.translate()} * ${right.translate()})`;
     },
-
     Term_div(left, _op, right) {
-      return `(${left.translate() / right.translate()})`;
+      return `${left.translate()} / ${right.translate()}`;
     },
     Term_mod(left, _op, right) {
-      return `(${left.translate() % right.translate()})`;
+      return `(${left.translate()} % ${right.translate()})`;
     },
     Primary_parens(_open, exp, _close) {
-      return `(${exp.translate()})`;
+      return exp.translate();
+    },
+    Factor_neg(_op, operand) {
+      return `-(${operand.translate()})`;
+    },
+    Factor_exp(left, _op, right) {
+      return `(${left.translate()} ** ${right.translate()})`;
     },
     numeral(digits, _dot, _fractional, _e, _sign, _exponent) {
       return Number(this.sourceString);
-    },
-    factor_neg(_op, right) {
-      return `-(${right.translate()})`;
-    },
-    factor_exp(_op, right) {
-      return `(${left.translate()}${right.translate()})`;
     },
     id(_first, _rest) {
       const entity = locals.get(this.sourceString);
@@ -143,10 +131,10 @@ export default function translate(match) {
       return entity;
     },
     true(_) {
-      return true; // type declared on line 156 Boolean.prototype.type = "boolean";
+      return true;
     },
     false(_) {
-      return false; // type declared on line 156 Boolean.prototype.type = "boolean";
+      return false;
     },
   });
 
