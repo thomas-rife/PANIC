@@ -52,13 +52,13 @@ In PANIC function declarations need to have explicitly typed parameters. In addi
 <td>
 
 ```PANIC
-f compare_numbers(int a, int b):  # Function Definition
-  if a = b
-    pl a, "is equal to", b
-  elif a < b
-    pl a, "is less than", b
-  else
-    pl a, "is greater than", b
+f compare_numbers(a, b):  # Function Definition
+  if a = b:
+    p a, "is equal to", b
+  elif a < b:
+    p a, "is less than", b
+  else:
+    p a, "is greater than", b
 
 
 n1: 10 # variable assignment
@@ -98,13 +98,12 @@ In PANIC `l` stands for loop and it is used both for whiles and for loops. We us
 <td>
 
 ```PANIC
-f fibonacci(int n):
+f fibonacci(n):
   a: 0  # Initialize starting values
   b: 1
-  l i in [0...n]:  # Loop from 0 to n
-    p a, end=" "
+  l i:0 in [0...n]:  # Loop from 0 to n
+    p a
     a, b: b, a + b
-  r # return
 
 num_terms: 10
 fibonacci(num_terms)
@@ -142,9 +141,11 @@ Here we have to declare a return type for the function factorial. Also, `or` is 
 <td>
 
 ```PANIC
-f factorial(int n) -> int:
-  if n = 0 or n = 1
+f factorial(n):
+  if n = 0:
     r 1
+  elif n = 1:
+    r 1
   r n*factorial(n-1)
 
   p factorial(5)
@@ -177,10 +178,10 @@ In PANIC arguments to a function can either be positional or keyword. Positional
 <td>
 
 ```PANIC
-l i in [1...5]:
-  l j in i:
-    p "*", end=" "
-      pl
+l i:1 in [1...5]:
+  l j:0 in i:
+    p "*"
+      p " "
 ```
 
 </td>
