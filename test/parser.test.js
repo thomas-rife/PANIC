@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import { ok, deepEqual, throws } from "node:assert/strict";
 import parse from "../src/parser.js";
 
-describe("Interpreter", () => {
+describe("Parser", () => {
   it("parses correctly", () => {
     ok(parse("p 69420").succeeded());
     ok(parse("p 2").succeeded());

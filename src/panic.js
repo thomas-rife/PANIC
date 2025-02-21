@@ -1,25 +1,34 @@
-// PANIC Compiler
+#! /usr/bin/env node
 
-// PANIC is a completely statically typed language
-// pretty much everything at compile time
+import * as fs from "node:fs/promises";
+import stringify from "graph-stringify";
+import compile from "./compiler.js";
 
-import * as fs from "fs";
-import parse from "./parser.js";
+const help = `PANIC compiler
 
-// Read the contents of the file grammar.ohm into a string
-if (process.argv.length !== 3) {
-  console.error("Usage: node src/panic.js <FILENAME>");
-  process.exit(1);
+Syntax: carlos <filename> <outputType>
+
+Prints to stdout according to <outputType>, which must be one of:
+
+  parsed     a message that the program was matched ok by the grammar
+  analyzed   the statically analyzed representation
+  optimized  the optimized semantically analyzed representation
+  js         the translation to JavaScript
+`;
+
+async function compileFromFile(filename, outputType) {
+  try {
+    const buffer = await fs.readFile(filename);
+    const compiled = compile(buffer.toString(), outputType);
+    console.log(stringify(compiled, "kind") || compiled);
+  } catch (e) {
+    console.error(`\u001b[31m${e}\u001b[39m`);
+    process.exitCode = 1;
+  }
 }
 
-try {
-  // synax
-  const sourceCode = fs.readFileSync(process.argv[2], "utf8");
-  const match = parse(sourceCode);
-
-  // console.log(match.join("\n"));
-} catch (e) {
-  console.error(`${e}`);
-  process.exit(1);
+if (process.argv.length !== 4) {
+  console.log(help);
+} else {
+  compileFromFile(process.argv[2], process.argv[3]);
 }
-// interpreter vs compiler: translates it into something else
