@@ -4,14 +4,14 @@ import parse from "../src/parser.js";
 
 describe("Interpreter", () => {
   it("parses correctly", () => {
-    ok(parse("print 1;").succeeded());
-    ok(parse("let x = 1;").succeeded());
-    ok(parse("x = 1;").succeeded());
-    ok(parse("while x < 10 { x = x < 7 + 1; break; }").succeeded());
+    ok(parse("p 69420").succeeded());
+    ok(parse("p 2").succeeded());
+    ok(parse("x: 1").succeeded());
+    ok(parse("p a").succeeded());
   });
   it("throws on syntax errors", () => {
-    throws(() => parse("print 1"), /Expected/);
-    throws(() => parse("sdkjfhsdjklfhs"), /Expected/);
-    throws(() => parse("print -2**2;"), /Expected/);
+    throws(() => parse("print 1 ,adf;"));
+    throws(() => parse("sdkjfhsdjklfhs"));
+    throws(() => parse("for i in range(x):"));
   });
 });

@@ -17,7 +17,7 @@ try {
   const sourceCode = fs.readFileSync(process.argv[2], "utf8");
   const match = parse(sourceCode);
 
-  console.log(match.join("\n"));
+  // console.log(match.join("\n"));
 } catch (e) {
   console.error(`${e}`);
   process.exit(1);
