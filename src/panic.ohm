@@ -1,19 +1,54 @@
 PANIC {
-  Program   = Stmt+
-  Stmt      = VarDec
-            | PrintStmt
-            | WhileStmt
-            | IfStmt
-            | break ";"                       --break
-            | AssignmentStmt
-            | "++" Primary_id ";"             --increment
-  VarDec    = let id "=" Exp ";"
-  PrintStmt = print Exp ";"
-  AssignmentStmt = Primary_id "=" Exp ";"
-  IfStmt    = if Exp Block (else (Block | IfStmt))?
-  WhileStmt = while Exp Block
-  Block     = "{" Stmt* "}"
+  Program   = GlobalStmt+
+  GlobalStmt      = VarDec
+                  | PrintStmt
+                  | LoopStmtGlobal
+                  | IfStmtGlobal
+                  | AssignmentStmt
+                  | "++" Primary_id                 --increment
+            	  | FuncDec
+                  | ExprStmt
+                  
+  LocalStmt  		= VarDec
+                     | PrintStmt
+                     | LoopStmtLocal
+                     | IfStmtLocal
+                     | AssignmentStmt
+                     | FuncDec
+                     | BreakStmt
+                     | ReturnStmt
+                     | ExprStmt
+
+  ExprStmt = Exp
+
+
+  FuncDec = (function | f) id ParamList ":" BlockLocal
+  FuncCall = id "(" CallArgs? ")"
+  CallArgs = Exp ("," Exp)*
+  ParamList = "(" ParamListContent? ")"
+  ParamListContent = (alnum+ | id) (", " (alnum+ | id))*
+  VarDec    = id ":" Exp
+  PrintStmt = (print | p) PrintArgs
+  PrintArgs	= Exp ("," Exp)*
+  AssignmentStmt = Primary_id "=" Exp
   
+  IfStmtGlobal = if Exp BlockGlobal (ElifClauseGlobal)* (else BlockGlobal)?
+  ElifClauseGlobal = elif Exp ":" BlockGlobal
+
+  IfStmtLocal = if Exp ":" LocalStmt+ (ElifClauseLocal)* (else ":" LocalStmt+)?  
+  ElifClauseLocal = elif Exp ":" BlockLocal
+  BlockGlobal = ":" GlobalStmt*
+  BlockLocal  = LocalStmt*
+  
+  LoopStmtGlobal = (l | for) VarDec "in" (Range | Exp) BlockGlobal
+  LoopStmtLocal = 	(l | for) VarDec "in" (Range | Exp) BlockLocal ":"
+  
+  Range     = "[" Exp Through Exp "]"
+  Through   = "..."
+  
+
+  ReturnStmt = (return | r) Exp?
+  BreakStmt 	= break
   Exp       = Condition relop Condition  --test
             | Condition
   Condition = Exp "+" Term               --add
@@ -26,25 +61,35 @@ PANIC {
   Factor    = Primary ("**") Factor      --exp
             | "-" Primary                --neg
             | Primary
-  Primary   = numeral
+  Primary   = FuncCall
+  			| numeral
             | id                         --id
             | true                       --true
             | false                      --false
             | "(" Exp ")"                --parens
-  
-  let       = "let" ~idchar
-  print     = "print" ~idchar
-  while     = "while" ~idchar
-  if        = "if" ~idchar
-  else      = "else" ~idchar
-  break     = "break" ~idchar
-  true      = "true" ~idchar
-  false     = "false" ~idchar
-  keyword   = print | while | if | else | break | let | true | false
+            | string					 --string
+            
+  string    = "\"" (~"\"" any)* "\""
+
+  function  = "function" 	~idchar
+  f         = "f" 			~idchar
+  print     = "print" 		~idchar
+  p         = "p" 			~idchar
+  for		= "for" 		~idchar
+  l     	= "l" 			~idchar
+  if        = "if" 			~idchar
+  elif      = "elif" 		~idchar
+  else      = "else" 		~idchar
+  break     = "break" 		~idchar
+  true      = "true" 		~idchar
+  false     = "false" 		~idchar
+  return	= "return"		~idchar
+  r			= "r"			~idchar
+  keyword   = f | function | print | p | l | for | if | elif | else | break | return | r | true | false
   id        = ~keyword letter idchar*
   idchar    = letter | digit | "_"
   numeral   = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
-  relop     = "<=" | "<" | "==" | "!=" | ">=" | ">"
+  relop     = "<=" | "<" | "=" | "!=" | ">=" | ">"
+  
+  space      += "#" (~"\n" any)*                      --comment
 }
-
-// basic, but pretty decent language. We need to add function calls and we can call it a day
