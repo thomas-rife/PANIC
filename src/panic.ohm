@@ -8,6 +8,7 @@ PANIC {
                   | "++" Primary_id                 --increment
             	  | FuncDec
                   | ExprStmt
+                  | ReturnStmt
                   
   LocalStmt  		= VarDec
                      | PrintStmt
@@ -32,23 +33,24 @@ PANIC {
   PrintArgs	= Exp ("," Exp)*
   AssignmentStmt = Primary_id "=" Exp
   
-  IfStmtGlobal = if Exp BlockGlobal (ElifClauseGlobal)* (else BlockGlobal)?
+  IfStmtGlobal = if Exp ":" BlockGlobal (ElifClauseGlobal)* (else ":" BlockGlobal)?
   ElifClauseGlobal = elif Exp ":" BlockGlobal
 
   IfStmtLocal = if Exp ":" LocalStmt+ (ElifClauseLocal)* (else ":" LocalStmt+)?  
   ElifClauseLocal = elif Exp ":" BlockLocal
-  BlockGlobal = ":" GlobalStmt*
+  BlockGlobal = GlobalStmt*
   BlockLocal  = LocalStmt*
   
-  LoopStmtGlobal = (l | for) VarDec "in" (Range | Exp) BlockGlobal
+  LoopStmtGlobal = (l | for) VarDec "in" (Range | Exp) BlockGlobal ":"
   LoopStmtLocal = 	(l | for) VarDec "in" (Range | Exp) BlockLocal ":"
   
   Range     = "[" Exp Through Exp "]"
   Through   = "..."
   
 
-  ReturnStmt = (return | r) Exp?
+  ReturnStmt = (return | r) (" " Exp)?
   BreakStmt 	= break
+  
   Exp       = Condition relop Condition  --test
             | Condition
   Condition = Exp "+" Term               --add
