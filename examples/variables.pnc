@@ -1,5 +1,0 @@
-let dog = 3;
-let cat = 5;
-print dog;
-print 4;
-print cat;
