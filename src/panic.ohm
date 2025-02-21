@@ -54,7 +54,7 @@ PANIC {
   ReturnStmt        = (return | r) (" " Exp)?
   BreakStmt 	      = break
   
-  Exp               = Exp (boolLogic) Exp  --logic
+  Exp               = Exp (boolLogic) Exp                                                 --logic
  				            | Condition relop Condition                                           --test
             	      | Condition
   Condition         = Exp "+" Term                                                        --add
@@ -77,26 +77,25 @@ PANIC {
             
   string            = "\"" (~"\"" any)* "\""
 
-  function          = "function" 	~idchar
-  f                 = "f" 			~idchar
-  print             = "print" 		~idchar
-  p                 = "p" 			~idchar
-  pl 		            = "pl"         ~idchar
-  for		            = "for" 		~idchar
-  l     	          = "l" 			~idchar
-  if                = "if" 			~idchar
-  elif              = "elif" 		~idchar
-  else              = "else" 		~idchar
-  break             = "break" 		~idchar
-  true              = "true" 		~idchar
-  false             = "false" 		~idchar
-  return	          = "return"		~idchar
-  or                = "or" 					~idchar
+  function          = "function"
+  f                 = "f"
+  print             = "print"
+  p                 = "p"
+  pl 		            = "pl"
+  for		            = "for"
+  l     	          = "l"
+  if                = "if" 	
+  elif              = "elif"
+  else              = "else"
+  break             = "break" 
+  true              = "true"
+  false             = "false"
+  return	          = "return"
+  or                = "or"
   and               = "and"
-  
-  r			            = "r"			~idchar
-  keyword           = f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and
-  funcKeyword       = print | pl | p
+  r			            = "r"
+  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and) ~idchar
+  funcKeyword       = (print | pl | p) ~idchar
   id                = ~keyword letter idchar*
   idchar            = letter | digit | "_"
   numeral           = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
