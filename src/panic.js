@@ -6,7 +6,7 @@ import compile from "./compiler.js";
 
 const help = `PANIC compiler
 
-Syntax: carlos <filename> <outputType>
+Syntax: panic <filename> <outputType>
 
 Prints to stdout according to <outputType>, which must be one of:
 

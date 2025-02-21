@@ -22,7 +22,6 @@ PANIC {
 
   ExprStmt = Exp
 
-
   FuncDec = (function | f) id ParamList ":" BlockLocal
   FuncCall = id "(" CallArgs? ")"
   CallArgs = Exp ("," Exp)*
