@@ -1,9 +1,9 @@
 f compare_numbers(int a, int b):  # Function Definition
-  if a = b
+  if a = b:
     pl a, "is equal to", b
-  elif a < b
+  elif a < b:
     pl a, "is less than", b
-  else
+  else:
     pl a, "is greater than", b
 
 
