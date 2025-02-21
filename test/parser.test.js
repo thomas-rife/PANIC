@@ -5,9 +5,9 @@ import parse from "../src/parser.js";
 const syntaxChecks = [
   ["Simplest syntatically correct program", "p 1"],
   ["Variable Declarations", "x: 1"],
-  ["function with no params", "f function1():"],
+  ["function with no parameters", "f function1():"],
   [
-    "function with two params separated by commas",
+    "function with two parameters separated by commas",
     "f function2(param1, param2):",
   ],
   ["function with return statement", "f function3(param1, param2): n:1 r n"],
