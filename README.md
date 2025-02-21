@@ -103,7 +103,9 @@ f fibonacci(n):
   b: 1
   l i:0 in [0...n]:  # Loop from 0 to n
     p a
-    a, b: b, a + b
+    a
+    b: b
+    a + b
 
 num_terms: 10
 fibonacci(num_terms)
