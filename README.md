@@ -101,7 +101,7 @@ In PANIC `l` stands for loop and it is used both for whiles and for loops. We us
 f fibonacci(n):
   a: 0  # Initialize starting values
   b: 1
-  l i:0 in [0...n]:  # Loop from 0 to n
+  l i in [0...n]:  # Loop from 0 to n
     p a
     a
     b: b
@@ -180,8 +180,8 @@ In PANIC arguments to a function can either be positional or keyword. Positional
 <td>
 
 ```PANIC
-l i:1 in [1...5]:
-  l j:0 in i:
+l i in [1...5]:
+  l j in i:
     p "*"
       p " "
 ```
