@@ -1,4 +1,6 @@
-# PANIC
+# PANIC Langauage
+
+### By Thomas Rife, August Wetterau, Brian Bowers, Walter Campos
 
 ![alt text](docs/logo.png)
 
