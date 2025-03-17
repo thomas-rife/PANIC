@@ -1,62 +1,42 @@
 PANIC {
-  Program           = GlobalStmt+
-  GlobalStmt        = VarDec
-                    | PrintStmt
-                    | LoopStmtGlobal
-                    | IfStmtGlobal
-                    | AssignmentStmt
-                    | "++" Primary_id                                                         --increment
-            	      | FuncDec
-                    | ExprStmt
-                    | ReturnStmt
-                  
-  LocalStmt  		    = VarDec
-                    | PrintStmt
-                    | LoopStmtLocal
-                    | IfStmtLocal
-                    | AssignmentStmt
-                    | FuncDec
-                    | BreakStmt
-                    | ReturnStmt
-                    | ExprStmt
-
-  ExprStmt          = Exp
-
-  FuncDec           = (function | f) id ParamList ("->" id)? ":" BlockLocal
-  FuncCall          = id "(" CallArgs? ")"--funcCall
-  				          | (id | funcKeyword) "->" (id | funcKeyword) ("->" (id | funcKeyword))*  --arrowsFuncs
-  CallArgs          = Exp ("," Exp)*
-  ParamList         = "(" ParamListContent? ")"
-  ParamListContent  = (alnum+ | id) (", " (alnum+ | id))*
-  VarDec            = id ":" Exp	--single
-  					        | id "," id ":" Exp ","  Exp                                            --multAssign
-  PrintStmt         = (print | pl | p) PrintArgs
-  PrintArgs	        = Exp ("," Exp)*
-  AssignmentStmt    = Primary_id ":" (Exp | ArrayLiteral)
-  
-  IfStmtGlobal      = if Exp ":" BlockGlobal (ElifClauseGlobal)* (else ":" BlockGlobal)?
-  ElifClauseGlobal  = elif Exp ":" BlockGlobal
-
-  IfStmtLocal       = if Exp ":" LocalStmt+ (ElifClauseLocal)* (else ":" LocalStmt+)?  
-  ElifClauseLocal   = elif Exp ":" BlockLocal
-  BlockGlobal       = GlobalStmt*
-  BlockLocal        = LocalStmt*
-  
-  LoopStmtGlobal    = (l | for) id "in" (Range | Exp) BlockGlobal ":"
-  LoopStmtLocal     = 	(l | for) id "in" (Range | Exp) BlockLocal ":"
-  
-  Range             = "[" Exp Through Exp "]"
-  ArrayLiteral      = "[" (NumRange | Exp)? ("," (NumRange | Exp))* ("," ("+" | "-") digit+)? "]"  
-  NumRange          = (digit | id) Through (digit | id)
-  Through           = "..."
-  
-
-  ReturnStmt        = (return | r) (" " Exp)?
-  BreakStmt 	      = break
-  
-  Exp               = Exp (boolLogic) Exp                                                 --logic
- 				            | Condition relop Condition                                           --test
-            	      | Condition
+Program = Statement+
+   
+    Statement = VarDec
+    			| FuncDec
+                | Exp ":" Exp  --assign
+                | break --break
+                | (return | r) Exp   --return
+                | FuncCall
+                | IfStmt
+                | LoopStmt
+                | Exp
+               
+    FuncCall    = Exp (Exp | id)*
+    					| (print | p | pl) (Exp | id)*
+                        
+    FuncDec = (function | f) id "(" ListOf<Params, ",">? ")" ("->" type)? Block
+   
+    VarDec =(mu | im) id ":" (Exp | RangeExp)
+   
+    Block = "{" Statement* "}"
+    
+    IfStmt = If Elif* Else?
+    
+	If  = if Exp ":" Block
+    Elif = elif Exp ":" Block
+    Else = else ":" Block
+      
+   LoopStmt = l id PatternExp ":" Block  --for
+   						| l VarDec "," Exp_test  "," Exp --while
+   
+   PatternExp = "," index "in" (RangeExp | numLit_int | id)       --enumerate
+   						| "in" (RangeExp | numLit_int | id)					--basicFor
+                        
+   
+   
+     Exp               = Exp (boolLogic) Exp                                                 --logic
+             | Condition relop Condition                                           --test
+                 | Condition
   Condition         = Exp "+" Term                                                        --add
                     | Exp "-" Term                                                        --sub
                     | Term
@@ -67,40 +47,58 @@ PANIC {
   Factor            = Primary ("**") Factor                                               --exp
                     | "-" Primary                                                         --neg
                     | Primary
-  Primary           = FuncCall
-                    | numeral
-                    | id                                                                  --id
+  Primary           = 
+                    | id                                                            --id
+                    | FuncCall
                     | true                                                                --true
                     | false                                                               --false
                     | "(" Exp ")"                                                         --parens
-                    | string					                                                    --string
-            
-  string            = "\"" (~"\"" any)* "\""
+                    | Literal                                                   --literal
+   
+  Literal = RangeExp | stringLit | numLit
+  				| "-" numLit		--negNumber
+  
+numLit =  digit+ "." digit+ --float
+                | digit+	--int
+
+
+  RangeExp             = "[" numRange ("," ("+" | "-") digit+)? "]"
+  numRange          = (numLit| id) through (numLit | id)
+  through           = "..."
+ 
+  Params = id type --typedArg
+ 			 | id ":" Exp --default
+   
+  stringLit     = "\"" (~"\"" any)* "\""
 
   function          = "function"
   f                 = "f"
   print             = "print"
   p                 = "p"
-  pl 		            = "pl"
-  for		            = "for"
-  l     	          = "l"
-  if                = "if" 	
+  pl            = "pl"
+  for            = "for"
+  l              = "l"
+  if                = "if"
   elif              = "elif"
   else              = "else"
-  break             = "break" 
+  break             = "break"
   true              = "true"
   false             = "false"
-  return	          = "return"
+  return          = "return"
   or                = "or"
   and               = "and"
-  r			            = "r"
-  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and) ~idchar
-  funcKeyword       = (print | pl | p) ~idchar
+  r            = "r"
+  mu = "mu"
+  im = "im"
+  in = "in"
+  index = "index"
+  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index) ~idchar
   id                = ~keyword letter idchar*
   idchar            = letter | digit | "_"
   numeral           = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
   relop             = "<=" | "<" | "=" | "!=" | ">=" | ">"
   boolLogic         = or | and
-  
+  type = ~keyword letter+
+ 
   space             += "#" (~"\n" any)*                                                 --comment
 }
