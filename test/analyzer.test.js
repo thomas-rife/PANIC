@@ -11,11 +11,25 @@ import analyze from "../src/analyzer.js";
 // } from "../src/core.js";
 
 // Programs that are semantically correct
-const semanticChecks = [["variable declarations", "a: 0"]];
+const semanticChecks = [
+  ["variable declarations", 'im x: 1 mu y: "false"'],
+  ["if statement with boolean type", "if x > 3 {p 1}"],
+  ["add", "3 + 4"],
+  ["multiply", "4 * 7"],
+  ["divide", "3 / 1"],
+  ["mod", "2 % 2"],
+  ["power", "2 ** 3"],
+  ["complex tests", "if 3 != 4 { r 2} elif 3 ** 4 > 3 and true {r 3}"],
+  ["complex expressions", "3 ** 4 + 2 - 10 % 8 / -3"],
+  ["assignment", "mu x: 1 x: 3"],
+  ["loops", "l i in [2...8] {p 1}"],
+  ["ranges", "[2...10, +3"],
+  ["function-dec", 'f cat(dog: Dog sound: "bark") -> int {}'],
+];
 
 // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
-  ["Non-type in field type", "let x=1;struct S {y:x}", /Type expected/],
+  // ["Non-type in field type", "let x=1;struct S {y:x}", /Type expected/],
 ];
 
 describe("The analyzer", () => {

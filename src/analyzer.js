@@ -517,7 +517,7 @@ export default function analyze(match) {
       return core.assignment(target, source);
     },
 
-    LoopStmt_for(_l, id, exp, _colon, block) {
+    LoopStmt_for(_l, id, exp, block) {
       const collection = exp.rep();
       mustBeIterable(exp);
       const iterator = core.variable(id.sourceString, false, core.intType);
@@ -602,7 +602,7 @@ export default function analyze(match) {
     //   return core.functionDeclaration(fun)
     // },
 
-    FuncCall(exp, _open, args, _close) {
+    FuncCall_normal(exp, _open, args, _close) {
       const callee = exp.rep();
       mustBeCallable(callee, { at: exp });
       const argums = args.children.map((child) => child.rep());

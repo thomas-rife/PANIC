@@ -1,4 +1,7 @@
 PANIC {
+
+// maybe make it so print x is fine if x is just one and a thing, but if it is more then you must use parens
+
 Program = Statement+
    
     Statement = VarDec
@@ -22,9 +25,12 @@ Program = Statement+
     
     MemberExp = Exp "." Exp "(" Exp* ")"
                    
-    FuncCall    = id "(" Exp* ")"
+    FuncCall    = id "(" Exp* ")"	--normal
+    					| (print | p | pl) "(" Exp* ")"	--print
+                        | (print | p | pl) Exp*	--print_oneParam
+                        | id Exp			--normal_oneParam
                         
-    FuncDec = (function | f) id "(" ListOf<Params, ",">? ")" ("->" type)? Block
+    FuncDec = (function | f) id "(" Params* ")" ("->" type)? Block
    
     VarDec =(mu | im) id ":" (Exp | RangeExp)
    
@@ -36,7 +42,7 @@ Program = Statement+
     Elif = elif Exp Block
     Else = else Block
       
-   LoopStmt = l id PatternExp ":" Block  --for
+   LoopStmt = l id PatternExp Block  --for
    						| l VarDec "," Exp2_test  "," Exp --while
    
    PatternExp = "," index "in" (RangeExp | numLit_int | id)       --enumerate
@@ -57,7 +63,7 @@ Program = Statement+
     Exp4        = Exp4 ("*" | "/" | "%") Exp5       --mul
                     | Exp5
   	Exp5       = Exp6 ("**") Exp5                    --exp
-                    | "-" Exp6                       --neg
+                    | ("-" | "!") Exp6                       --neg
                     | Exp6
   	Exp6        = id arrayIndex+									  --indexing
                     | FuncCall
