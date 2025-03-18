@@ -6,13 +6,23 @@ Program = Statement+
                 | Exp ":" Exp  --assign
                 | break --break
                 | (return | r) Exp   --return
+                | id arrayIndex+									--indexing
+                | MemberExp
                 | FuncCall
                 | IfStmt
                 | LoopStmt
+                | ClassDec
                 | Exp
-               
-    FuncCall    = Exp (Exp | id)*
-    					| (print | p | pl) (Exp | id)*
+                
+    ClassDec = c id ClassBlock
+    
+    ClassBlock = "{" Constructor? VarDec* FuncDec "}"
+    
+    Constructor = con "(" Params ")" Block 
+    
+    MemberExp = Exp "." Exp "(" Exp* ")"
+                   
+    FuncCall    = id "(" Exp* ")"
                         
     FuncDec = (function | f) id "(" ListOf<Params, ",">? ")" ("->" type)? Block
    
@@ -22,38 +32,43 @@ Program = Statement+
     
     IfStmt = If Elif* Else?
     
-	If  = if Exp ":" Block
-    Elif = elif Exp ":" Block
-    Else = else ":" Block
+	If  = if Exp Block
+    Elif = elif Exp Block
+    Else = else Block
       
    LoopStmt = l id PatternExp ":" Block  --for
-   						| l VarDec "," Exp_test  "," Exp --while
+   						| l VarDec "," Exp2_test  "," Exp --while
    
    PatternExp = "," index "in" (RangeExp | numLit_int | id)       --enumerate
    						| "in" (RangeExp | numLit_int | id)					--basicFor
                         
    
    
-     Exp               = Exp (boolLogic) Exp                                                 --logic
-             | Condition relop Condition                                           --test
-                 | Condition
-  Condition         = Exp "+" Term                                                        --add
-                    | Exp "-" Term                                                        --sub
-                    | Term
-  Term              = Term "*" Factor                                                     --mul
-                    | Term "/" Factor                                                     --div
-                    | Term "%" Factor                                                     --mod
-                    | Factor
-  Factor            = Primary ("**") Factor                                               --exp
-                    | "-" Primary                                                         --neg
-                    | Primary
-  Primary           = 
-                    | id                                                            --id
+    
+	Exp 		= Exp1 "?" Exp1 ":" Exp									--conditional
+    				| Exp1
+     Exp1		=  Exp1 or Exp2                --or
+            | Exp1 and Exp2               --and
+     				| Exp2
+    Exp2        = Exp3 relop Exp3                   --test
+             		 | Exp3
+  	Exp3        = Exp3 ("+" | "-") Exp4              --add
+                    | Exp4
+    Exp4        = Exp4 ("*" | "/" | "%") Exp5       --mul
+                    | Exp5
+  	Exp5       = Exp6 ("**") Exp5                    --exp
+                    | "-" Exp6                       --neg
+                    | Exp6
+  	Exp6        = id arrayIndex+									  --indexing
                     | FuncCall
-                    | true                                                                --true
-                    | false                                                               --false
-                    | "(" Exp ")"                                                         --parens
-                    | Literal                                                   --literal
+                    | true                           --true
+                    | false                           --false
+                    | "(" Exp6 ")"                    --parens
+                    | Literal                        --literal
+                    | id                          --id
+   
+   arrayIndex = "[" numLit_int "]"  --singleIndex
+   						| "[" numLit_int? ":" numLit_int? "]" --multipleElems
    
   Literal = RangeExp | stringLit | numLit
   				| "-" numLit		--negNumber
@@ -92,12 +107,13 @@ numLit =  digit+ "." digit+ --float
   im = "im"
   in = "in"
   index = "index"
-  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index) ~idchar
+  c = "c"
+  con = "con"
+  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index | c) ~idchar
   id                = ~keyword letter idchar*
   idchar            = letter | digit | "_"
   numeral           = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
   relop             = "<=" | "<" | "=" | "!=" | ">=" | ">"
-  boolLogic         = or | and
   type = ~keyword letter+
  
   space             += "#" (~"\n" any)*                                                 --comment

@@ -306,17 +306,11 @@ export default function analyze(match) {
       return Number(this.sourceString);
     },
 
-    Primary_id(id) {
-      const entity = context.lookup(id.sourceString);
-      mustHaveBeenFound(entity, id.sourceString, { at: id });
-      return entity;
-    },
-
     IfStmt(ifStmt, elif, otherwise) {
       const ifPart = handleIf(ifStmt);
       function handleIf(node) {
         const condition = node.children[1];
-        const block = node.children[3];
+        const block = node.children[2];
         const test = condition.rep();
         mustHaveBooleanType(test, { at: condition });
         context = context.newChildContext();
@@ -328,7 +322,7 @@ export default function analyze(match) {
       const elifPart = elif.children.map((child) => handleElif(child));
       function handleElif(node) {
         const condition = node.children[1];
-        const block = node.children[3];
+        const block = node.children[2];
         const test = condition.rep();
         mustHaveBooleanType(test, { at: condition });
         context = context.newChildContext();
@@ -340,7 +334,7 @@ export default function analyze(match) {
       const elsePart = otherwise.children.map((child) => handleElse(child));
       function handleElse(node) {
         if (node.children.length === 3) {
-          const block = node.children[2];
+          const block = node.children[1];
           context = context.newChildContext();
           const consequent = block.rep();
           context = context.parent;
@@ -351,7 +345,24 @@ export default function analyze(match) {
       return core.ifStatement(ifPart[0], ifPart[1], elifPart, elsePart);
     },
 
-    Exp_test(cond, logic, cond1) {
+    Exp_conditional(exp, _q, exp1, colon, exp2) {
+      const test = exp.rep();
+      mustHaveBooleanType(test, { at: exp });
+      const [consequent, otherwise] = [exp1.rep(), exp2.rep()];
+      mustBothHaveTheSameType(consequent, otherwise, { at: colon });
+      const other = core.elseStmt(otherwise);
+      return core.ifStatement(test, consequent, null, other);
+    },
+
+    // Exp_conditional(exp, _questionMark, exp1, colon, exp2) {
+    //   const test = exp.rep()
+    //   mustHaveBooleanType(test, { at: exp })
+    //   const [consequent, alternate] = [exp1.rep(), exp2.rep()]
+    //   mustBothHaveTheSameType(consequent, alternate, { at: colon })
+    //   return core.conditional(test, consequent, alternate, consequent.type)
+    // },
+
+    Exp2_test(cond, logic, cond1) {
       const [left, op, right] = [cond.rep(), logic.sourceString, cond1.rep()];
       if (["<", "<=", ">", ">="].includes(op)) {
         mustHaveNumericOrStringType(left, { at: cond });
@@ -360,9 +371,143 @@ export default function analyze(match) {
       return core.binary(op, left, right, core.booleanType);
     },
 
-    Block(statements) {
+    Block(_open, statements, _close) {
       return statements.children.map((s) => s.rep());
     },
+
+    Exp6_id(id) {
+      const entity = context.lookup(id.sourceString);
+      mustHaveBeenFound(entity, id.sourceString, { at: id });
+      return entity;
+    },
+
+    Exp1_or(exp, _or, exp1) {
+      let left = exp.rep();
+      mustHaveBooleanType(left, { at: exp });
+      for (let e of exp1.children) {
+        let right = e.rep();
+        mustHaveBooleanType(right, { at: e });
+        left = core.binary("||", left, right, core.booleanType);
+      }
+      return left;
+    },
+
+    // Exp2_or(exp, _ops, exps) {
+    //   let left = exp.rep()
+    //   mustHaveBooleanType(left, { at: exp })
+    //   for (let e of exps.children) {
+    //     let right = e.rep()
+    //     mustHaveBooleanType(right, { at: e })
+    //     left = core.binary("||", left, right, core.booleanType)
+    //   }
+    //   return left
+    // },
+
+    Exp1_and(exp, _and, exp1) {
+      let left = exp.rep();
+      mustHaveBooleanType(left, { at: exp });
+      for (let e of exp1.children) {
+        let right = e.rep();
+        mustHaveBooleanType(right, { at: e });
+        left = core.binary("&&", left, right, core.booleanType);
+      }
+      return left;
+    },
+
+    // Exp2_and(exp, _ops, exps) {
+    //   let left = exp.rep()
+    //   mustHaveBooleanType(left, { at: exp })
+    //   for (let e of exps.children) {
+    //     let right = e.rep()
+    //     mustHaveBooleanType(right, { at: e })
+    //     left = core.binary("&&", left, right, core.booleanType)
+    //   }
+    //   return left
+    // },
+
+    Exp3_add(exp1, addOp, exp2) {
+      const [left, op, right] = [exp1.rep(), addOp.sourceString, exp2.rep()];
+      if (op === "+") {
+        mustHaveNumericOrStringType(left, { at: exp1 });
+      } else {
+        mustHaveNumericType(left, { at: exp1 });
+      }
+      mustBothHaveTheSameType(left, right, { at: addOp });
+      return core.binary(op, left, right, left.type);
+    },
+
+    // Exp6_add(exp1, addOp, exp2) {
+    //   const [left, op, right] = [exp1.rep(), addOp.sourceString, exp2.rep()]
+    //   if (op === "+") {
+    //     mustHaveNumericOrStringType(left, { at: exp1 })
+    //   } else {
+    //     mustHaveNumericType(left, { at: exp1 })
+    //   }
+    //   mustBothHaveTheSameType(left, right, { at: addOp })
+    //   return core.binary(op, left, right, left.type)
+    // },
+
+    Exp4_mul(exp1, mulOp, exp2) {
+      const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()];
+      mustHaveNumericType(left, { at: exp1 });
+      mustBothHaveTheSameType(left, right, { at: mulOp });
+      return core.binary(op, left, right, left.type);
+    },
+
+    // Exp7_multiply(exp1, mulOp, exp2) {
+    //   const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()]
+    //   mustHaveNumericType(left, { at: exp1 })
+    //   mustBothHaveTheSameType(left, right, { at: mulOp })
+    //   return core.binary(op, left, right, left.type)
+    // },
+
+    Exp5_exp(exp1, powerOp, exp2) {
+      const [left, op, right] = [exp1.rep(), powerOp.sourceString, exp2.rep()];
+      mustHaveNumericType(left, { at: exp1 });
+      mustBothHaveTheSameType(left, right, { at: powerOp });
+      return core.binary(op, left, right, left.type);
+    },
+
+    Exp5_neg(opSign, exp) {
+      const [op, operand] = [opSign.sourceString(), exp.rep()];
+      if (op === "!") {
+        mustHaveBooleanType(exp, { at: exp });
+        const type = core.booleanType;
+        return core.unary(op, operand, type);
+      } else if (op === "-") {
+        mustHaveNumericType(exp, { at: exp });
+        const type = core.booleanType;
+        return core.unary(op, operand, type);
+      }
+    },
+
+    // Exp8_power(exp1, powerOp, exp2) {
+    //   const [left, op, right] = [exp1.rep(), powerOp.sourceString, exp2.rep()]
+    //   mustHaveNumericType(left, { at: exp1 })
+    //   mustBothHaveTheSameType(left, right, { at: powerOp })
+    //   return core.binary(op, left, right, left.type)
+    // },
+
+    // Exp8_unary(unaryOp, exp) {
+    //   const [op, operand] = [unaryOp.sourceString, exp.rep()]
+    //   let type
+    //   if (op === "#") {
+    //     mustHaveAnArrayType(operand, { at: exp })
+    //     type = core.intType
+    //   } else if (op === "-") {
+    //     mustHaveNumericType(operand, { at: exp })
+    //     type = operand.type
+    //   } else if (op === "!") {
+    //     mustHaveBooleanType(operand, { at: exp })
+    //     type = core.booleanType
+    //   } else if (op === "some") {
+    //     type = core.optionalType(operand.type)
+    //   } else if (op === "random") {
+    //     mustHaveAnArrayType(operand, { at: exp })
+    //     type = operand.type.baseType
+    //   }
+    //   return core.unary(op, operand, type)
+    // },
 
     Statement_assign(variable, _colon, exp) {
       const source = exp.rep();
@@ -396,10 +541,10 @@ export default function analyze(match) {
       }
     },
 
-    RangeExp(_open, exp, _thru, exp1, _close) {
+    RangeExp(_open, range, _comma, sign, number, _close) {
       const start = exp.rep();
       const end = exp.rep();
-      return core.range(start, end, "+", BigInt(1));
+      return core.range(start, end, sign, number);
     },
 
     // LoopStmt_range(_for, id, _in, exp1, op, exp2, block) {
@@ -414,7 +559,7 @@ export default function analyze(match) {
     //   return core.forRangeStatement(iterator, low, op.sourceString, high, body)
     // },
 
-    FuncDec(_key, id, _open, listParams, _close, _arrow, type, _colon, block) {
+    FuncDec(_key, id, _open, listParams, _close, _arrow, type, block) {
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
       const fun = core.func(id.sourceString);
       context.add(id.sourceString, fun);
@@ -457,7 +602,7 @@ export default function analyze(match) {
     //   return core.functionDeclaration(fun)
     // },
 
-    FuncCall(exp, args) {
+    FuncCall(exp, _open, args, _close) {
       const callee = exp.rep();
       mustBeCallable(callee, { at: exp });
       const argums = args.children.map((child) => child.rep());
@@ -622,41 +767,11 @@ export default function analyze(match) {
     //   return core.whileStatement(test, body)
     // },
 
-    // Exp_conditional(exp, _questionMark, exp1, colon, exp2) {
-    //   const test = exp.rep()
-    //   mustHaveBooleanType(test, { at: exp })
-    //   const [consequent, alternate] = [exp1.rep(), exp2.rep()]
-    //   mustBothHaveTheSameType(consequent, alternate, { at: colon })
-    //   return core.conditional(test, consequent, alternate, consequent.type)
-    // },
-
     // Exp1_unwrapelse(exp1, elseOp, exp2) {
     //   const [optional, op, alternate] = [exp1.rep(), elseOp.sourceString, exp2.rep()]
     //   mustHaveAnOptionalType(optional, { at: exp1 })
     //   mustBeAssignable(alternate, { toType: optional.type.baseType }, { at: exp2 })
     //   return core.binary(op, optional, alternate, optional.type)
-    // },
-
-    // Exp2_or(exp, _ops, exps) {
-    //   let left = exp.rep()
-    //   mustHaveBooleanType(left, { at: exp })
-    //   for (let e of exps.children) {
-    //     let right = e.rep()
-    //     mustHaveBooleanType(right, { at: e })
-    //     left = core.binary("||", left, right, core.booleanType)
-    //   }
-    //   return left
-    // },
-
-    // Exp2_and(exp, _ops, exps) {
-    //   let left = exp.rep()
-    //   mustHaveBooleanType(left, { at: exp })
-    //   for (let e of exps.children) {
-    //     let right = e.rep()
-    //     mustHaveBooleanType(right, { at: e })
-    //     left = core.binary("&&", left, right, core.booleanType)
-    //   }
-    //   return left
     // },
 
     // Exp3_bitor(exp, _ops, exps) {
@@ -701,59 +816,6 @@ export default function analyze(match) {
     //   }
     //   mustBothHaveTheSameType(left, right, { at: relop })
     //   return core.binary(op, left, right, core.booleanType)
-    // },
-
-    // Exp5_shift(exp1, shiftOp, exp2) {
-    //   const [left, op, right] = [exp1.rep(), shiftOp.sourceString, exp2.rep()]
-    //   mustHaveIntegerType(left, { at: exp1 })
-    //   mustHaveIntegerType(right, { at: exp2 })
-    //   return core.binary(op, left, right, core.intType)
-    // },
-
-    // Exp6_add(exp1, addOp, exp2) {
-    //   const [left, op, right] = [exp1.rep(), addOp.sourceString, exp2.rep()]
-    //   if (op === "+") {
-    //     mustHaveNumericOrStringType(left, { at: exp1 })
-    //   } else {
-    //     mustHaveNumericType(left, { at: exp1 })
-    //   }
-    //   mustBothHaveTheSameType(left, right, { at: addOp })
-    //   return core.binary(op, left, right, left.type)
-    // },
-
-    // Exp7_multiply(exp1, mulOp, exp2) {
-    //   const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()]
-    //   mustHaveNumericType(left, { at: exp1 })
-    //   mustBothHaveTheSameType(left, right, { at: mulOp })
-    //   return core.binary(op, left, right, left.type)
-    // },
-
-    // Exp8_power(exp1, powerOp, exp2) {
-    //   const [left, op, right] = [exp1.rep(), powerOp.sourceString, exp2.rep()]
-    //   mustHaveNumericType(left, { at: exp1 })
-    //   mustBothHaveTheSameType(left, right, { at: powerOp })
-    //   return core.binary(op, left, right, left.type)
-    // },
-
-    // Exp8_unary(unaryOp, exp) {
-    //   const [op, operand] = [unaryOp.sourceString, exp.rep()]
-    //   let type
-    //   if (op === "#") {
-    //     mustHaveAnArrayType(operand, { at: exp })
-    //     type = core.intType
-    //   } else if (op === "-") {
-    //     mustHaveNumericType(operand, { at: exp })
-    //     type = operand.type
-    //   } else if (op === "!") {
-    //     mustHaveBooleanType(operand, { at: exp })
-    //     type = core.booleanType
-    //   } else if (op === "some") {
-    //     type = core.optionalType(operand.type)
-    //   } else if (op === "random") {
-    //     mustHaveAnArrayType(operand, { at: exp })
-    //     type = operand.type.baseType
-    //   }
-    //   return core.unary(op, operand, type)
     // },
 
     // Exp9_emptyarray(ty, _open, _close) {
