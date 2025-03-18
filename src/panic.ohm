@@ -26,9 +26,9 @@ Program = Statement+
     MemberExp = Exp "." Exp "(" Exp* ")"
                    
     FuncCall    = id "(" Exp* ")"	--normal
-    					| (print | p | pl) "(" Exp* ")"	--print
-                        | (print | p | pl) Exp*	--print_oneParam
-                        | id Exp			--normal_oneParam
+    					| (print | p | pl) "(" Exp* ")"	--intrinsic
+                        | (print | p | pl) Exp	--intrinsicOne
+                        | id Exp			--normalOne
                         
     FuncDec = (function | f) id "(" Param* ")" ("->" type)? Block
    

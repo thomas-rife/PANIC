@@ -159,18 +159,18 @@ export function memberExpression(object, op, field) {
 }
 
 export function functionCall(callee, args) {
-  //   if (callee.intrinsic) {
-  //     if (callee.type.returnType === voidType) {
-  //       return {
-  //         kind: callee.name.replace(/^\p{L}/u, (c) => c.toUpperCase()),
-  //         args,
-  //       };
-  //     } else if (callee.type.paramTypes.length === 1) {
-  //       return unary(callee.name, args[0], callee.type.returnType);
-  //     } else {
-  //       return binary(callee.name, args[0], args[1], callee.type.returnType);
-  //     }
-  //   }
+  if (callee.intrinsic) {
+    if (callee.type.returnType === voidType) {
+      return {
+        kind: callee.name.replace(/^\p{L}/u, (c) => c.toUpperCase()),
+        args,
+      };
+    } else if (callee.type.paramTypes.length === 1) {
+      return unary(callee.name, args[0], callee.type.returnType);
+    } else {
+      return binary(callee.name, args[0], args[1], callee.type.returnType);
+    }
+  }
   return { kind: "FunctionCall", callee, args, type: callee.type.returnType };
 }
 
@@ -193,6 +193,9 @@ export const standardLibrary = Object.freeze({
   any: anyType,
   π: variable("π", false, floatType),
   print: intrinsicFunction("print", anyToVoidType),
+  p: intrinsicFunction("print", anyToVoidType),
+  pl: intrinsicFunction("printLine", anyToVoidType),
+
   sqrt: intrinsicFunction("sqrt", floatToFloatType),
   sin: intrinsicFunction("sin", floatToFloatType),
   cos: intrinsicFunction("cos", floatToFloatType),

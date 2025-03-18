@@ -445,7 +445,7 @@ export default function analyze(match) {
     Exp4_mul(exp1, mulOp, exp2) {
       const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()];
       mustHaveNumericType(left, { at: exp1 });
-      mustBothHaveTheSameType(left, right, { at: mulOp });
+      // mustBothHaveTheSameType(left, right, { at: mulOp });
       return core.binary(op, left, right, left.type);
     },
 
@@ -464,13 +464,13 @@ export default function analyze(match) {
     },
 
     Exp5_neg(opSign, exp) {
-      const [op, operand] = [opSign.sourceString(), exp.rep()];
+      const [op, operand] = [opSign.sourceString, exp.rep()];
       if (op === "!") {
         mustHaveBooleanType(exp, { at: exp });
         const type = core.booleanType;
         return core.unary(op, operand, type);
       } else if (op === "-") {
-        mustHaveNumericType(exp, { at: exp });
+        mustHaveNumericType(operand, { at: exp });
         const type = core.booleanType;
         return core.unary(op, operand, type);
       }
@@ -537,9 +537,16 @@ export default function analyze(match) {
     },
 
     RangeExp(_open, range, _comma, sign, number, _close) {
-      const start = exp.rep();
-      const end = exp.rep();
-      return core.range(start, end, sign, number);
+      const [start, end] = [range.children[0].rep(), range.children[2].rep()];
+
+      const num = number.children[0]?.sourceString;
+
+      return core.range(
+        start,
+        end,
+        sign.children[0]?.sourceString,
+        num ? BigInt(num) : null
+      );
     },
 
     // LoopStmt_range(_for, id, _in, exp1, op, exp2, block) {
@@ -599,15 +606,47 @@ export default function analyze(match) {
     // },
 
     FuncCall_normal(exp, _open, args, _close) {
-      const callee = exp.rep();
+      const callee = context.lookup(exp.sourceString);
       mustBeCallable(callee, { at: exp });
       const argums = args.children.map((child) => child.rep());
-      core.functionCall(callee, argums);
+      return core.functionCall(callee, argums);
     },
 
+    FuncCall_intrinsic(id, _open, args, _close) {
+      const callee = context.lookup(id.sourceString);
+      mustBeCallable(callee, { at: id });
+      const argums = args.children.map((child) => child.rep());
+      return core.functionCall(callee, argums);
+    },
+
+    FuncCall_intrinsicOne(id, arg) {
+      const callee = context.lookup(id.sourceString);
+      mustBeCallable(callee, { at: id });
+      const argum = arg.rep();
+      return core.functionCall(callee, argum);
+    },
+
+    FuncCall_normalOne(id, arg) {
+      const callee = context.lookup(id.sourceString);
+      mustBeCallable(callee, { at: id });
+      const argum = arg.rep();
+      return core.functionCall(callee, argum);
+    },
+
+    //need to make sure its already been declared, needs work because theres two cases, 1 is an var, other is a lit
     Param_default(id, _colon, exp) {
       const value = exp.rep();
-      return core.default_param(id.sourceString, value, value.type);
+
+      {
+        mustHaveBeenFound(exp.sourceString, { at: exp }) ||
+          mustHaveNumericOrStringType(value, { at: exp });
+      }
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id });
+
+      const param = core.default_param(id.sourceString, value, value.type);
+
+      context.add(id.sourceString, param);
+      return param;
     },
 
     // Param(id, _colon, type) {
@@ -888,6 +927,10 @@ export default function analyze(match) {
 
     numLit_float(_nums, _dot, _moreNums) {
       return Number(this.sourceString);
+    },
+
+    stringLit(_open, _string, _close) {
+      return this.sourceString;
     },
 
     true(_) {

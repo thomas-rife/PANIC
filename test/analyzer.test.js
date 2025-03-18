@@ -23,8 +23,8 @@ const semanticChecks = [
   ["complex expressions", "3 ** 4 + 2 - 10 % 8 / -3"],
   ["assignment", "mu x: 1 x: 3"],
   ["loops", "l i in [2...8] {p 1}"],
-  ["ranges", "[2...10, +3"],
-  ["function-dec", 'f cat(dog: Dog sound: "bark") -> int {}'],
+  ["ranges", "[2...10, +3]"],
+  ["function-dec", 'f cat(dog Dog sound: "bark") -> int {}'],
 ];
 
 // Programs that are syntactically correct but have semantic errors
