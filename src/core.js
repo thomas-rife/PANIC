@@ -21,9 +21,9 @@ export const stringType = "string";
 export const voidType = "void";
 export const anyType = "any";
 
-export function intrinsicFunction(name, type) {
-  return { kind: "Function", name, type, intrinsic: true };
-}
+// export function intrinsicFunction(name, type) {
+//   return { kind: "Function", name, type, intrinsic: true };
+// }
 
 // export function structType(name, fields) {
 //   return { kind: "StructType", name, fields };
@@ -61,8 +61,12 @@ export function functionType(paramTypes, returnType) {
 //   return { kind: "Decrement", variable };
 // }
 
-export function param(id, defaultValue, type) {
+export function default_param(id, defaultValue, type) {
   return { kind: "Parameter", id, defaultValue, type };
+}
+
+export function param(id, type) {
+  return { kind: "Parameter", id, type };
 }
 
 export function assignment(target, source) {
@@ -187,16 +191,16 @@ export const standardLibrary = Object.freeze({
   string: stringType,
   void: voidType,
   any: anyType,
-  π: variable("π", false, floatType),
-  print: intrinsicFunction("print", anyToVoidType),
-  sqrt: intrinsicFunction("sqrt", floatToFloatType),
-  sin: intrinsicFunction("sin", floatToFloatType),
-  cos: intrinsicFunction("cos", floatToFloatType),
-  exp: intrinsicFunction("exp", floatToFloatType),
-  ln: intrinsicFunction("ln", floatToFloatType),
-  hypot: intrinsicFunction("hypot", floatFloatToFloatType),
-  bytes: intrinsicFunction("bytes", stringToIntsType),
-  codepoints: intrinsicFunction("codepoints", stringToIntsType),
+  //   π: variable("π", false, floatType),
+  //   print: intrinsicFunction("print", anyToVoidType),
+  //   sqrt: intrinsicFunction("sqrt", floatToFloatType),
+  //   sin: intrinsicFunction("sin", floatToFloatType),
+  //   cos: intrinsicFunction("cos", floatToFloatType),
+  //   exp: intrinsicFunction("exp", floatToFloatType),
+  //   ln: intrinsicFunction("ln", floatToFloatType),
+  //   hypot: intrinsicFunction("hypot", floatFloatToFloatType),
+  //   bytes: intrinsicFunction("bytes", stringToIntsType),
+  //   codepoints: intrinsicFunction("codepoints", stringToIntsType),
 });
 
 // We want every expression to have a type property. But we aren't creating

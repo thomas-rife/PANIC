@@ -21,7 +21,7 @@ Program = Statement+
     
     ClassBlock = "{" Constructor? VarDec* FuncDec "}"
     
-    Constructor = con "(" Params ")" Block 
+    Constructor = con "(" Param* ")" Block 
     
     MemberExp = Exp "." Exp "(" Exp* ")"
                    
@@ -30,7 +30,7 @@ Program = Statement+
                         | (print | p | pl) Exp*	--print_oneParam
                         | id Exp			--normal_oneParam
                         
-    FuncDec = (function | f) id "(" Params* ")" ("->" type)? Block
+    FuncDec = (function | f) id "(" Param* ")" ("->" type)? Block
    
     VarDec =(mu | im) id ":" (Exp | RangeExp)
    
@@ -87,7 +87,7 @@ numLit =  digit+ "." digit+ --float
   numRange          = (numLit| id) through (numLit | id)
   through           = "..."
  
-  Params = id type --typedArg
+  Param = id type --typedArg
  			 | id ":" Exp --default
    
   stringLit     = "\"" (~"\"" any)* "\""

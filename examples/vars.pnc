@@ -1,6 +1,1 @@
-im cat: 1
-mu dog: 2
-
-if cat = 1 and dog != 2{
-    dog: 2 + 3
-}
+2

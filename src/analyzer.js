@@ -289,6 +289,9 @@ export default function analyze(match) {
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
       const initializer = exp.rep();
       const mutable = mut.sourceString === "mu";
+
+      console.log(initializer.type);
+
       const variable = core.variable(
         id.sourceString,
         mutable,
@@ -296,14 +299,6 @@ export default function analyze(match) {
       );
       context.add(id.sourceString, variable);
       return core.variableDeclaration(variable, initializer);
-    },
-
-    numLit_int(_digits) {
-      return BigInt(this.sourceString);
-    },
-
-    numLit_float(_nums, _dot, _moreNums) {
-      return Number(this.sourceString);
     },
 
     IfStmt(ifStmt, elif, otherwise) {
@@ -564,17 +559,18 @@ export default function analyze(match) {
       const fun = core.func(id.sourceString);
       context.add(id.sourceString, fun);
       context = context.newChildContext({ inLoop: false, function: fun });
-      fun.params = listParams.rep();
+      fun.params = listParams.children.map((child) => child.rep());
+      const paramTypes = fun.params.map((param) => param.type);
 
-      // const paramTypes = fun.params.map((param) => param.type);
-      // console.log(`----------- ${paramTypes}`);
+      const returnType =
+        type.matchLength > 0 ? type.sourceString : core.voidType;
+      fun.type = core.functionType(paramTypes, returnType);
+      fun.body = block.rep();
+      context = context.parent;
 
-      // const returnType = type ?? core.voidType;
-      // fun.type = core.functionType(paramTypes, returnType);
+      console.log(core.functionDeclaration(fun));
 
-      // fun.body = block.rep();
-      // context = context.parent;
-      // return core.functionDeclaration(fun);
+      return core.functionDeclaration(fun);
     },
 
     // FunDecl(_fun, id, parameters, _colons, type, block) {
@@ -609,9 +605,9 @@ export default function analyze(match) {
       core.functionCall(callee, argums);
     },
 
-    Params_default(id, _colon, exp) {
+    Param_default(id, _colon, exp) {
       const value = exp.rep();
-      return core.param(id, value, value.type);
+      return core.default_param(id.sourceString, value, value.type);
     },
 
     // Param(id, _colon, type) {
@@ -621,8 +617,8 @@ export default function analyze(match) {
     //   return param
     // },
 
-    Params_typedArg(id, type) {
-      return core.param(id, null, type);
+    Param_typedArg(id, type) {
+      return core.param(id.sourceString, type.sourceString);
     },
 
     // Exp9_call(exp, open, expList, _close) {
@@ -885,6 +881,14 @@ export default function analyze(match) {
     //   mustHaveBeenFound(entity, id.sourceString, { at: id })
     //   return entity
     // },
+
+    numLit_int(_digits) {
+      return BigInt(this.sourceString);
+    },
+
+    numLit_float(_nums, _dot, _moreNums) {
+      return Number(this.sourceString);
+    },
 
     true(_) {
       return true;
