@@ -1,9 +1,9 @@
 f fibonacci(int n):
-  a: 0  # Initialize starting values
-  b: 1
+  x: 0  # Initialize starting values
+  y: 1
   l i in [0...n]:  # Loop from 0 to n 
-    p a, end=" "
-    a, b: b, a + b
+    p x, end=" "
+    x, y: y, x + y
   r # return
 
 num_terms: 10

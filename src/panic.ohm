@@ -7,7 +7,7 @@ Program = Statement+
     Statement = VarDec
     			| FuncDec
                 | Exp ":" Exp  --assign
-                | break --break
+                | (break | b) --break
                 | (return | r) Exp   --return
                 | id arrayIndex+									--indexing
                 | MemberExp
@@ -19,15 +19,15 @@ Program = Statement+
                 
     ClassDec = c id ClassBlock
     
-    ClassBlock = "{" Constructor? VarDec* FuncDec "}"
+    ClassBlock = "{" Constructor? VarDec* FuncDec* "}"
     
     Constructor = con "(" Param* ")" Block 
     
-    MemberExp = Exp "." Exp "(" Exp* ")"
+    MemberExp = id "." id "(" Exp* ")"
                    
     FuncCall    = id "(" Exp* ")"	--normal
-    					| (print | p | pl) "(" Exp* ")"	--intrinsic
-                        | (print | p | pl) Exp	--intrinsicOne
+    					| (print | pl | p) "(" Exp* ")"	--intrinsic
+                        | (print | pl | p) Exp	--intrinsicOne
                         | id Exp			--normalOne
                         
     FuncDec = (function | f) id "(" Param* ")" ("->" type)? Block
@@ -43,7 +43,7 @@ Program = Statement+
     Else = else Block
       
    LoopStmt = l id PatternExp Block  --for
-   						| l VarDec "," Exp2_test  "," Exp --while
+   						| l Exp2_test Block--while
    
    PatternExp = "," index "in" (RangeExp | numLit_int | id)       --enumerate
    						| "in" (RangeExp | numLit_int | id)					--basicFor
@@ -69,7 +69,7 @@ Program = Statement+
                     | FuncCall
                     | true                           --true
                     | false                           --false
-                    | "(" Exp6 ")"                    --parens
+                    | "(" Exp3 ")"                    --parens
                     | Literal                        --literal
                     | id                          --id
    
@@ -103,6 +103,7 @@ numLit =  digit+ "." digit+ --float
   elif              = "elif"
   else              = "else"
   break             = "break"
+  b = "b"
   true              = "true"
   false             = "false"
   return          = "return"
@@ -115,7 +116,7 @@ numLit =  digit+ "." digit+ --float
   index = "index"
   c = "c"
   con = "con"
-  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index | c) ~idchar
+  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index | c | b) ~idchar
   id                = ~keyword letter idchar*
   idchar            = letter | digit | "_"
   numeral           = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?

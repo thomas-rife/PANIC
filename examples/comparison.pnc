@@ -1,12 +1,15 @@
-f compare_numbers(int a, int b):  # Function Definition
-  if a = b:
-    pl a, "is equal to", b
-  elif a < b:
-    pl a, "is less than", b
-  else:
-    pl a, "is greater than", b
+f compare_numbers(x int y int){  # Function Definition
+  if x = y {
+    pl (x "is equal to" y)
+  }
+  elif x < y {
+    pl (x "is less than" y)
+  }
+  else {
+    pl (x "is greater than" y)
+  }
+}
 
-
-n1: 10 # variable assignment
-n2: 20
-compare_numbers(n1, n2)  # Call the function
+im n1: 10 # variable assignment
+im n2: 20
+compare_numbers(n1 n2)  # Call the function
