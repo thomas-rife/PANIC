@@ -16,7 +16,7 @@ const semanticChecks = [
   ["Function Declaration with parameters", "f func(x int y: 3 z float){}"],
   [
     "More complex function",
-    "f func(x int y: 3 z float){x: 3 * z ** y return x}}",
+    "f func(x int y: 3 z int){mu v: 3 * z ** y return v}",
   ],
   ["Function call", "f func(x int y: 3 z float){} func(3 5 2.0)"],
   ["Function call with default", "f func(x int y: 3 z float){} func(3 2.0)"],
@@ -27,10 +27,10 @@ const semanticChecks = [
   ["Variable declarations", "im x: 2 mu y: 3"],
   ["More complex var dec", "im x: [1 2 3 4 5]"],
   ["Ranges", "im x: [1...5]"],
-  ["Complex ranges", "im x: [1...5, +3"],
+  ["Complex ranges", "im x: [1...5, +3]"],
   ["Loop statements", "l i in [1...5] {p i}"],
-  ["Loop while statement", "l i < 3 {p i}"],
-  ["More complex patters", "im x: [1 2 3] l i in 8 {} l i in x {}"],
+  ["Loop while statement", "mu i: 0 l i < 3 {p i}"],
+  ["More complex patterns", "im x: [1 2 3] l i in 8 {} l i in x {}"],
   ["If statement", "im x: 1 if x = 3 {p 1}"],
   [
     "Complex if statement",
