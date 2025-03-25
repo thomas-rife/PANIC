@@ -12,23 +12,44 @@ import analyze from "../src/analyzer.js";
 
 // Programs that are semantically correct
 const semanticChecks = [
-  ["variable declarations", 'im x: 1 mu y: "false"'],
-  ["if statement with boolean type", "im x: 1 if x > 3 {p 1}"],
+  ["Empty Function Declaration", "f func(){}"],
+  ["Function Declaration with parameters", "f func(x int y: 3 z float){}"],
+  [
+    "More complex function",
+    "f func(x int y: 3 z float){x: 3 * z ** y return x}}",
+  ],
+  ["Function call", "f func(x int y: 3 z float){} func(3 5 2.0)"],
+  ["Function call with default", "f func(x int y: 3 z float){} func(3 2.0)"],
+  ["Function call with one arg", "f func(x int){} func 2"],
+  ["Intrinsic Function", "p 3 pl(5) print(8 4 8)"],
+  ["Simplest class", "c Dog {}"],
+  ["More complex class", 'c Dog {con(x int y int){} f bark(){p "bark" }}'],
+  ["Variable declarations", "im x: 2 mu y: 3"],
+  ["More complex var dec", "im x: [1 2 3 4 5]"],
+  ["Ranges", "im x: [1...5]"],
+  ["Complex ranges", "im x: [1...5, +3"],
+  ["Loop statements", "l i in [1...5] {p i}"],
+  ["Loop while statement", "l i < 3 {p i}"],
+  ["More complex patters", "im x: [1 2 3] l i in 8 {} l i in x {}"],
+  ["If statement", "im x: 1 if x = 3 {p 1}"],
+  [
+    "Complex if statement",
+    'if 3 > 4 {} elif 4 = 3 {} elif 5 = 4 {} else {p "yay"}',
+  ],
   ["add", "3 + 4"],
+  ["parens", "2 + (4 - 2)"],
   ["multiply", "4 * 7"],
   ["divide", "3 / 1"],
   ["mod", "2 % 2"],
   ["power", "2 ** 3"],
+  ["complex expressions", "3 ** 4 + 2 - 10 % 8 / -3"],
   [
-    "complex tests",
+    "Complex function with return",
     "f why() -> int {if 3 != 4 { r 2} elif 3 ** 4 > 3 and true {r 3}}",
   ],
-  ["complex expressions", "3 ** 4 + 2 - 10 % 8 / -3"],
-  ["assignment", "mu x: 1 x: 3"],
-  ["loops", "l i in [2...8] {p 1}"],
-  ["ranges", "[2...10, +3]"],
-  ["function-dec", 'f cat(dog Dog sound: "bark") -> int {}'],
-  ["break", "l i in [1...5] {if i = 3 { b }}"],
+  ["Assignment", "mu x: 1 x: 3"],
+  ["Break", "l i in [1...5] {if i = 3 { b }}"],
+  ["Array indexing", "im x: [1 2 3] x[2] p x[2]"],
 ];
 
 // Programs that are syntactically correct but have semantic errors

@@ -231,3 +231,26 @@ console.log(x);
 
 </td>
 </table>
+
+
+## List of Semantic Checks
+- Functions, variables and classes must have unique names
+- Parameters must have different names
+- Function calls must have correct number of arguments
+- Function arguments must be the same type as expected parameter types
+- Class stuff HERE
+- For loops must be over items that are iterable
+- 
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-

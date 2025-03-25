@@ -29,6 +29,45 @@ const syntaxChecks = [
   ],
   ["printing relational operators", "p 1 > 3"],
   ["Commenting examples", "f function4() {r 2} # hello"],
+
+  //new test
+
+  ["Empty Function Declaration", "f func(){}"],
+  ["Function Declaration with parameters", "f func(x int y: 3 z float){}"],
+  [
+    "More complex function",
+    "f func(x int y: 3 z float){x: 3 * z ** y return x}",
+  ],
+  ["Function call", "f func(x int y: 3 z float){} func(3 5 2.0)"],
+  ["Function call with default", "f func(x int y: 3 z float){} func(3 2.0)"],
+  ["Function call with one arg", "f func(x int){} func 2"],
+  ["Intrinsic Function", "p 3 pl(5) print(8 4 8)"],
+  ["Simplest class", "c Dog {}"],
+  ["More complex class", 'c Dog {con(x int y int){} f bark(){p "bark" }}'],
+  ["Variable declarations", "im x: 2 mu y: 3"],
+  ["More complex var dec", "im x: [1 2 3 4 5]"],
+  ["Ranges", "im x: [1...5]"],
+  ["Complex ranges", "im x: [1...5, +3]"],
+  ["Loop statements", "l i in [1...5] {p i}"],
+  ["Loop while statement", "l i < 3 {p i}"],
+  ["More complex patters", "im x: [1 2 3] l i in 8 {} l i in x {}"],
+  ["If statement", "im x: 1 if x = 3 {p 1}"],
+  [
+    "Complex if statement",
+    'if 3 > 4 {} elif 4 = 3 {} elif 5 = 4 {} else {p "yay"}',
+  ],
+  ["add", "3 + 4"],
+  ["multiply", "4 * 7"],
+  ["divide", "3 / 1"],
+  ["mod", "2 % 2"],
+  ["power", "2 ** 3"],
+  ["complex expressions", "3 ** 4 + 2 - 10 % 8 / -3"],
+  [
+    "Complex function with return",
+    "f why() -> int {if 3 != 4 { r 2} elif 3 ** 4 > 3 and true {r 3}}",
+  ],
+  ["Assignment", "mu x: 1 x: 3"],
+  ["Break", "l i in [1...5] {if i = 3 { b }}"],
 ];
 
 const syntaxErrors = [

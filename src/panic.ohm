@@ -45,12 +45,8 @@ Program = Statement+
    LoopStmt = l id PatternExp Block  --for
    						| l Exp2_test Block--while
    
-   PatternExp = "," index "in" (RangeExp | numLit_int | id)       --enumerate
-   						| "in" (RangeExp | numLit_int | id)					--basicFor
+   PatternExp = "in" (RangeExp | numLit_int | id)					--basicFor
                         
-   
-   
-    
 	Exp 		= Exp1 "?" Exp1 ":" Exp									--conditional
     				| Exp1
      Exp1		=  Exp1 or Exp2                --or
@@ -76,12 +72,13 @@ Program = Statement+
    arrayIndex = "[" numLit_int "]"  --singleIndex
    						| "[" numLit_int? ":" numLit_int? "]" --multipleElems
    
-  Literal = RangeExp | stringLit | numLit
+  Literal = RangeExp | ArrayLiteral | stringLit | numLit
   				| "-" numLit		--negNumber
   
 numLit =  digit+ "." digit+ --float
                 | digit+	--int
 
+ArrayLiteral = "[" (numLit)* "]"
 
   RangeExp             = "[" numRange ("," ("+" | "-") digit+)? "]"
   numRange          = (numLit| id) through (numLit | id)

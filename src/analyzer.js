@@ -4,6 +4,7 @@
 // called the AST). This representation also includes entities from the
 // standard library, as needed.
 
+import { error } from "node:console";
 import * as core from "./core.js";
 
 class Context {
@@ -35,6 +36,14 @@ class Context {
   }
   newChildContext(props) {
     return new Context({ ...this, ...props, parent: this, locals: new Map() });
+  }
+
+  printContext() {
+    console.log("parent: ", this.parent);
+    console.log("locals: ", this.locals);
+    console.log("inloop: ", this.inLoop);
+    console.log("inClass: ", this.inClass);
+    console.log("function; ", this.f);
   }
 }
 
@@ -245,8 +254,8 @@ export default function analyze(match) {
   }
 
   function mustBeCallable(e, at) {
-    const callable =
-      e?.kind === "StructType" || e.type?.kind === "FunctionType";
+    //class constuctors are callable as well
+    const callable = e.type?.kind === "FunctionType";
     must(callable, "Call of non-function or non-constructor", at);
   }
 
@@ -273,6 +282,51 @@ export default function analyze(match) {
     //TODO
   }
 
+  function mustHaveCorrectArgsAndTypes(params, args, at) {
+    const maxParams = params.length;
+    let minParams = 0;
+    const argLength = args.length;
+
+    for (let param of params) {
+      if (param["defaultValue"] != null) {
+        minParams++;
+      }
+    }
+
+    if (argLength < minParams || argLength > maxParams) {
+      const message = `Expected between ${minParams} and ${maxParams} arguments, but ${argLength} parameters were passed`;
+      must(false, message, at);
+    }
+
+    if (argLength != maxParams) {
+      const remove = maxParams - argLength;
+      let correctParams = params;
+
+      for (let i = 0; i < remove; i++) {
+        for (let j = correctParams.length - 1; j >= 0; j--) {
+          if (params[j]["defaultValue"] === null) {
+            correctParams.splice(j, 1);
+          }
+        }
+      }
+      checkTypes(correctParams, args, at);
+    } else {
+      checkTypes(params, args, at);
+    }
+  }
+
+  function checkTypes(params, args, at) {
+    for (let i = 0; i < params.length; i++) {
+      let param = params[i];
+      let arg = args[i];
+
+      if (param.type !== arg.type) {
+        const message = `Type mismatch: expected ${param.type}, got ${arg.type}`;
+        must(false, message, at);
+      }
+    }
+  }
+
   // Building the program representation will be done together with semantic
   // analysis and error checking. In Ohm, we do this with a semantics object
   // that has an operation for each relevant rule in the grammar. Since the
@@ -293,7 +347,6 @@ export default function analyze(match) {
       context = context.newChildContext({ inLoop: false, function: fun });
       fun.params = listParams.children.map((child) => child.rep());
       const paramTypes = fun.params.map((param) => param.type);
-
       const returnType =
         type.matchLength > 0 ? type.sourceString : core.voidType;
       fun.type = core.functionType(paramTypes, returnType);
@@ -306,6 +359,7 @@ export default function analyze(match) {
       const callee = context.lookup(exp.sourceString);
       mustBeCallable(callee, { at: exp });
       const argums = args.children.map((child) => child.rep());
+      mustHaveCorrectArgsAndTypes(callee["params"], argums, { at: args });
       return core.functionCall(callee, argums);
     },
 
@@ -319,34 +373,38 @@ export default function analyze(match) {
     FuncCall_intrinsicOne(id, arg) {
       const callee = context.lookup(id.sourceString);
       mustBeCallable(callee, { at: id });
-      const argum = arg.rep();
+      const argum = [arg.rep()];
       return core.functionCall(callee, argum);
     },
 
     FuncCall_normalOne(id, arg) {
       const callee = context.lookup(id.sourceString);
       mustBeCallable(callee, { at: id });
-      const argum = arg.rep();
+      const argum = [arg.rep()];
+      mustHaveCorrectArgsAndTypes(callee["params"], argum, { at: arg });
       return core.functionCall(callee, argum);
     },
 
-    //need to make sure its already been declared, needs work because theres two cases, 1 is an var, other is a lit
     Param_default(id, _colon, exp) {
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id });
       const value = exp.rep();
       {
         mustHaveBeenFound(exp.sourceString, { at: exp }) ||
           mustHaveNumericOrStringType(value, { at: exp });
       }
-      mustNotAlreadyBeDeclared(id.sourceString, { at: id });
-      const param = core.default_param(id.sourceString, value, value.type);
+      const param = core.param(id.sourceString, value, value.type);
       context.add(id.sourceString, param);
       return param;
     },
 
     Param_typedArg(id, type) {
-      return core.param(id.sourceString, type.sourceString);
+      mustNotAlreadyBeDeclared(id.sourceString, { at: id });
+      const param = core.param(id.sourceString, null, type.sourceString);
+      context.add(id.sourceString, param);
+      return param;
     },
 
+    // start class stuff
     ClassDec(_c, id, ClassBlock) {
       const name = id.sourceString;
       context = context.newChildContext();
@@ -378,6 +436,7 @@ export default function analyze(match) {
       b = core.functionCall(func, arg);
       console.log(b);
     },
+    // end class stuff
 
     VarDec(mut, id, _colon, exp) {
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
@@ -394,7 +453,7 @@ export default function analyze(match) {
 
     LoopStmt_for(_l, id, exp, block) {
       const collection = exp.rep();
-      mustBeIterable(exp);
+      mustBeIterable(exp, { at: exp });
       const iterator = core.variable(id.sourceString, false, core.intType);
       context = context.newChildContext({ inLoop: true });
       context.add(id.sourceString, iterator);
@@ -405,11 +464,14 @@ export default function analyze(match) {
 
     LoopStmt_while(_l, test, block) {
       const testCond = test.rep();
+      context = context.newChildContext({ inLoop: true });
       const body = block.rep();
+      context = context.parent;
       return core.whileStatement(testCond, body);
     },
 
     PatternExp_basicFor(_in, value) {
+      //integer types need to be fixed
       const typeNode = value.ctorName;
       if (typeNode === "numLit_int") {
         return core.range(BigInt(0), value.rep(), "+", BigInt(1));
@@ -417,7 +479,7 @@ export default function analyze(match) {
         return value.rep();
       } else if (typeNode === "id") {
         const collection = context.lookup(value.sourceString);
-        mustBeIterable(collection);
+        mustBeIterable(collection, { at: value });
         return collection;
       }
     },
@@ -603,6 +665,11 @@ export default function analyze(match) {
       const returnExp = exp.rep();
       // mustBeReturnable(returnExp, { from: context.function }, { at: exp });
       return core.returnStatement(returnExp);
+    },
+
+    ArrayLiteral(_open, exps, _close) {
+      const elements = exps.children.map((child) => child.rep());
+      return core.arrayExpression(elements);
     },
 
     numLit_int(_digits) {

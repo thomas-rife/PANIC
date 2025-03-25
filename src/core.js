@@ -37,12 +37,8 @@ export function functionType(paramTypes, returnType, classMethod = false) {
   return { kind: "FunctionType", paramTypes, returnType, classMethod };
 }
 
-export function default_param(id, defaultValue, type) {
+export function param(id, defaultValue, type) {
   return { kind: "Parameter", id, defaultValue, type };
-}
-
-export function param(id, type) {
-  return { kind: "Parameter", id, type };
 }
 
 export function assignment(target, source) {
@@ -144,19 +140,18 @@ export const standardLibrary = Object.freeze({
   string: stringType,
   void: voidType,
   any: anyType,
-  π: variable("π", false, floatType),
   print: intrinsicFunction("print", anyToVoidType),
   p: intrinsicFunction("print", anyToVoidType),
   pl: intrinsicFunction("printLine", anyToVoidType),
 
-  sqrt: intrinsicFunction("sqrt", floatToFloatType),
-  sin: intrinsicFunction("sin", floatToFloatType),
-  cos: intrinsicFunction("cos", floatToFloatType),
-  exp: intrinsicFunction("exp", floatToFloatType),
-  ln: intrinsicFunction("ln", floatToFloatType),
-  hypot: intrinsicFunction("hypot", floatFloatToFloatType),
-  bytes: intrinsicFunction("bytes", stringToIntsType),
-  codepoints: intrinsicFunction("codepoints", stringToIntsType),
+  // sqrt: intrinsicFunction("sqrt", floatToFloatType),
+  // sin: intrinsicFunction("sin", floatToFloatType),
+  // cos: intrinsicFunction("cos", floatToFloatType),
+  // exp: intrinsicFunction("exp", floatToFloatType),
+  // ln: intrinsicFunction("ln", floatToFloatType),
+  // hypot: intrinsicFunction("hypot", floatFloatToFloatType),
+  // bytes: intrinsicFunction("bytes", stringToIntsType),
+  // codepoints: intrinsicFunction("codepoints", stringToIntsType),
 });
 
 // We want every expression to have a type property. But we aren't creating
