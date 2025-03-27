@@ -6,6 +6,7 @@
 
 import { error } from "node:console";
 import * as core from "./core.js";
+import { kMaxLength } from "node:buffer";
 
 class Context {
   // Like most statically-scoped languages, Carlos contexts will contain a
@@ -286,40 +287,44 @@ export default function analyze(match) {
     const maxParams = params.length;
     let minParams = 0;
     const argLength = args.length;
-
     for (let param of params) {
-      if (param["defaultValue"] != null) {
+      if (param["defaultValue"] === null) {
         minParams++;
       }
     }
-
     if (argLength < minParams || argLength > maxParams) {
-      const message = `Expected between ${minParams} and ${maxParams} arguments, but ${argLength} parameters were passed`;
+      const message =
+        minParams === maxParams
+          ? `Expected ${maxParams} arguments, but ${argLength} parameters were passed`
+          : `Expected between ${minParams} and ${maxParams} arguments, but ${argLength} parameters were passed`;
       must(false, message, at);
     }
 
     if (argLength != maxParams) {
-      const remove = maxParams - argLength;
+      const remove =
+        maxParams - (argLength > minParams ? maxParams - argLength : minParams);
       let correctParams = params;
 
       for (let i = 0; i < remove; i++) {
         for (let j = correctParams.length - 1; j >= 0; j--) {
-          if (params[j]["defaultValue"] === null) {
+          if (params[j]["defaultValue"] !== null) {
             correctParams.splice(j, 1);
+            break;
           }
         }
       }
+
       checkTypes(correctParams, args, at);
     } else {
       checkTypes(params, args, at);
     }
   }
-
   function checkTypes(params, args, at) {
-    for (let i = 0; i < params.length; i++) {
+    console.log(params, args);
+
+    for (let i = 0; i < args.length; i++) {
       let param = params[i];
       let arg = args[i];
-
       if (param.type !== arg.type) {
         const message = `Type mismatch: expected ${param.type}, got ${arg.type}`;
         must(false, message, at);
@@ -327,6 +332,15 @@ export default function analyze(match) {
     }
   }
 
+  function mustBeValidType() {}
+  function mustHaveLiteralType() {}
+
+  function mustBeAbleToIndex(collection, at) {
+    const canIndex =
+      collection.type === "string" || collection.type?.kind === "ArrayType";
+    const message = `Unable to index ${collection.type}`;
+    must(canIndex, message, at);
+  }
   // Building the program representation will be done together with semantic
   // analysis and error checking. In Ohm, we do this with a semantics object
   // that has an operation for each relevant rule in the grammar. Since the
@@ -359,7 +373,11 @@ export default function analyze(match) {
       const callee = context.lookup(exp.sourceString);
       mustBeCallable(callee, { at: exp });
       const argums = args.children.map((child) => child.rep());
-      mustHaveCorrectArgsAndTypes(callee["params"], argums, { at: args });
+      mustHaveCorrectArgsAndTypes(
+        structuredClone(callee["params"]),
+        structuredClone(argums),
+        { at: args }
+      );
       return core.functionCall(callee, argums);
     },
 
@@ -370,27 +388,12 @@ export default function analyze(match) {
       return core.functionCall(callee, argums);
     },
 
-    FuncCall_intrinsicOne(id, arg) {
-      const callee = context.lookup(id.sourceString);
-      mustBeCallable(callee, { at: id });
-      const argum = [arg.rep()];
-      return core.functionCall(callee, argum);
-    },
-
-    FuncCall_normalOne(id, arg) {
-      const callee = context.lookup(id.sourceString);
-      mustBeCallable(callee, { at: id });
-      const argum = [arg.rep()];
-      mustHaveCorrectArgsAndTypes(callee["params"], argum, { at: arg });
-      return core.functionCall(callee, argum);
-    },
-
     Param_default(id, _colon, exp) {
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
       const value = exp.rep();
       {
         mustHaveBeenFound(exp.sourceString, { at: exp }) ||
-          mustHaveNumericOrStringType(value, { at: exp });
+          mustHaveLiteralType(value, { at: exp });
       }
       const param = core.param(id.sourceString, value, value.type);
       context.add(id.sourceString, param);
@@ -399,6 +402,7 @@ export default function analyze(match) {
 
     Param_typedArg(id, type) {
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });
+      mustBeValidType(type.sourceString, { at: type });
       const param = core.param(id.sourceString, null, type.sourceString);
       context.add(id.sourceString, param);
       return param;
@@ -434,7 +438,6 @@ export default function analyze(match) {
       arg.push(...args);
 
       b = core.functionCall(func, arg);
-      console.log(b);
     },
     // end class stuff
 
@@ -581,21 +584,21 @@ export default function analyze(match) {
       } else {
         mustHaveNumericType(left, { at: exp1 });
       }
-      mustBothHaveTheSameType(left, right, { at: addOp });
+      mustHaveNumericOrStringType(right, { at: exp2 });
       return core.binary(op, left, right, left.type);
     },
 
     Exp4_mul(exp1, mulOp, exp2) {
       const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()];
       mustHaveNumericType(left, { at: exp1 });
-      // mustBothHaveTheSameType(left, right, { at: mulOp });
+      mustHaveNumericType(right, { at: exp2 });
       return core.binary(op, left, right, left.type);
     },
 
     Exp5_exp(exp1, powerOp, exp2) {
       const [left, op, right] = [exp1.rep(), powerOp.sourceString, exp2.rep()];
       mustHaveNumericType(left, { at: exp1 });
-      mustBothHaveTheSameType(left, right, { at: powerOp });
+      mustHaveNumericType(right, { at: exp2 });
       return core.binary(op, left, right, left.type);
     },
 
@@ -607,7 +610,7 @@ export default function analyze(match) {
         return core.unary(op, operand, type);
       } else if (op === "-") {
         mustHaveNumericType(operand, { at: exp });
-        const type = core.booleanType;
+        const type = operand.type;
         return core.unary(op, operand, type);
       }
     },
@@ -621,17 +624,12 @@ export default function analyze(match) {
     Exp6_indexing(id, i) {
       const array = context.lookup(id.sourceString);
       const index = i.children.map((child) => child.rep());
+      mustBeAbleToIndex(array, { at: id });
       return core.arrayIndex(array, index);
     },
 
     Exp6_parens(_open, exp, _close) {
       return exp.rep();
-    },
-
-    Statement_indexing(id, i) {
-      const array = context.lookup(id.sourceString);
-      const index = i.children.map((child) => child.rep());
-      return core.arrayIndex(array, index);
     },
 
     arrayIndex_singleIndex(_open, num, _close) {

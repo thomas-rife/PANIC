@@ -1,5 +1,2 @@
-f func(x: 4){
-    
-}
-
-func()
+f func(x int y: 3 z float){} 
+func(3 2.0)

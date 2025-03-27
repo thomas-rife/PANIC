@@ -1,15 +1,11 @@
 PANIC {
-
-// maybe make it so print x is fine if x is just one and a thing, but if it is more then you must use parens
-
-Program = Statement+
+	Program = Statement+
    
     Statement = VarDec
     			| FuncDec
                 | Exp ":" Exp  --assign
                 | (break | b) --break
                 | (return | r) Exp   --return
-                | id arrayIndex+									--indexing
                 | MemberExp
                 | FuncCall
                 | IfStmt
@@ -27,8 +23,6 @@ Program = Statement+
                    
     FuncCall    = id "(" Exp* ")"	--normal
     					| (print | pl | p) "(" Exp* ")"	--intrinsic
-                        | (print | pl | p) Exp	--intrinsicOne
-                        | id Exp			--normalOne
                         
     FuncDec = (function | f) id "(" Param* ")" ("->" type)? Block
    
@@ -63,6 +57,7 @@ Program = Statement+
                     | Exp6
   	Exp6        = id arrayIndex+									  --indexing
                     | FuncCall
+                    | MemberExp
                     | true                           --true
                     | false                           --false
                     | "(" Exp3 ")"                    --parens
