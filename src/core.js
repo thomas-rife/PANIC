@@ -119,12 +119,12 @@ export function functionCall(callee, args) {
   return { kind: "FunctionCall", callee, args, type: callee.type.returnType };
 }
 
-export function classDeclaration(constructor, methods, attributes) {
-  return { kind: "ClassDeclaration", constructor, methods, attributes };
+export function classDeclaration(constructor, methods) {
+  return { kind: "ClassDeclaration", constructor, methods };
 }
 
-export function constructorCall(args, body) {
-  return { kind: "ConstructorCall", args, body };
+export function constructorCall(args) {
+  return { kind: "ConstructorCall", args };
 }
 
 // These local constants are used to simplify the standard library definitions.

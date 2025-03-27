@@ -363,7 +363,7 @@ export default function analyze(match) {
       const paramTypes = fun.params.map((param) => param.type);
       const returnType =
         type.matchLength > 0 ? type.sourceString : core.voidType;
-      fun.type = core.functionType(paramTypes, returnType);
+      fun.type = core.functionType(paramTypes, returnType, context.inClass);
       fun.body = block.rep();
       context = context.parent;
       return core.functionDeclaration(fun);
@@ -408,28 +408,41 @@ export default function analyze(match) {
       return param;
     },
 
-    // start class stuff
     ClassDec(_c, id, ClassBlock) {
       const name = id.sourceString;
-      context = context.newChildContext();
-      const [constructor, attributes, functions] = ClassBlock.rep();
+      mustNotAlreadyBeDeclared(name, { at: id });
+      context = context.newChildContext({ inClass: true });
+      const [constructor, functions] = ClassBlock.rep();
       context = context.parent;
-      return core.classDeclaration(constructor, functions, attributes);
+      return core.classDeclaration(constructor, functions);
     },
 
-    ClassBlock(_open, construct, vardec, funs, _close) {
+    ClassBlock(_open, construct, funs, _close) {
       const constructor = construct.children.map((child) => child.rep());
-      const attributes = vardec.children.map((child) => child.rep());
       const functs = funs.children.map((child) => child.rep());
-      return [constructor, attributes, functs];
+      return [constructor, functs];
     },
 
-    Constructor(_con, _open, params, _close, block) {
+    Constructor(_con, _open, params, _close) {
       const parameters = params.children.map((child) => child.rep());
-      context = context.newChildContext();
-      const body = block.rep();
-      context = context.parent;
-      return core.constructorCall(parameters, body);
+      return core.constructorCall(parameters);
+    },
+
+    ClassParam_default(id, _colon, exp) {
+      const value = exp.rep();
+      mustHaveLiteralType(value, { at: exp });
+      const name = id.sourceString;
+      const param = core.param(name, value, value.type);
+      context.add(name, param);
+      return param;
+    },
+
+    ClassParam_typedArg(id, type) {
+      mustBeValidType(type.sourceString, { at: type });
+      const name = id.sourceString;
+      const param = core.param(name, null, type.sourceString);
+      context.add(name, param);
+      return param;
     },
 
     MemberExp(id, _dot, func, _open, exps, _close) {
@@ -439,7 +452,6 @@ export default function analyze(match) {
 
       b = core.functionCall(func, arg);
     },
-    // end class stuff
 
     VarDec(mut, id, _colon, exp) {
       mustNotAlreadyBeDeclared(id.sourceString, { at: id });

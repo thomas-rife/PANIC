@@ -15,9 +15,12 @@ PANIC {
                 
     ClassDec = c id ClassBlock
     
-    ClassBlock = "{" Constructor? VarDec* FuncDec* "}"
+    ClassBlock = "{" Constructor? FuncDec* "}"
     
-    Constructor = con "(" Param* ")" Block 
+    Constructor = con "(" ClassParam* ")"
+    
+    ClassParam = id type --typedArg
+ 			 | id ":" Exp --default
     
     MemberExp = id "." id "(" Exp* ")"
                    

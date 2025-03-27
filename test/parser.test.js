@@ -43,7 +43,7 @@ const syntaxChecks = [
   ["Function call with one arg", "f func(x int){} func(2)"],
   ["Intrinsic Function", "p(3) pl(5) print(8 4 8)"],
   ["Simplest class", "c Dog {}"],
-  ["More complex class", 'c Dog {con(x int y int){} f bark(){p("bark")}}'],
+  ["More complex class", 'c Dog {con(x int y int) f bark(){p("bark")}}'],
   ["Variable declarations", "im x: 2 mu y: 3"],
   ["More complex var dec", "im x: [1 2 3 4 5]"],
   ["Ranges", "im x: [1...5]"],
