@@ -5,7 +5,7 @@ PANIC {
     			| FuncDec
                 | Exp ":" Exp  --assign
                 | (break | b) --break
-                | (return | r) Exp   --return
+                | (return | r) Exp?   --return
                 | MemberExp
                 | FuncCall
                 | IfStmt
@@ -42,7 +42,8 @@ PANIC {
    LoopStmt = l id PatternExp Block  --for
    						| l Exp2_test Block--while
    
-   PatternExp = "in" (RangeExp | numLit_int | id)					--basicFor
+   PatternExp = in Literal					--literal
+   						| in id                      --id
                         
 	Exp 		= Exp1 "?" Exp1 ":" Exp									--conditional
     				| Exp1
@@ -56,7 +57,7 @@ PANIC {
     Exp4        = Exp4 ("*" | "/" | "%") Exp5       --mul
                     | Exp5
   	Exp5       = Exp6 ("**") Exp5                    --exp
-                    | ("-" | "!") Exp6                       --neg
+                    | ("-" | "!") Exp6                       --unary
                     | Exp6
   	Exp6        = id arrayIndex+									  --indexing
                     | FuncCall
@@ -68,17 +69,16 @@ PANIC {
                     | id                          --id
    
    arrayIndex = "[" numLit_int "]"  --singleIndex
-   						| "[" numLit_int? ":" numLit_int? "]" --multipleElems
+   						| "[" numLit_int? ":" numLit_int? "]" --slice
    
   Literal = RangeExp | ArrayLiteral | stringLit | numLit
-  				| "-" numLit		--negNumber
   
 numLit =  digit+ "." digit+ --float
                 | digit+	--int
 
-ArrayLiteral = "[" (numLit)* "]"
+ArrayLiteral = "[" (ArrayLiteral | Exp)* "]"
 
-  RangeExp             = "[" numRange ("," ("+" | "-") digit+)? "]"
+  RangeExp             = "[" numRange ("," ("+" | "-" | "/" | "**" | "*" | "%") numLit+)? "]"
   numRange          = (numLit| id) through (numLit | id)
   through           = "..."
  
@@ -87,6 +87,7 @@ ArrayLiteral = "[" (numLit)* "]"
    
   stringLit     = "\"" (~"\"" any)* "\""
 
+  types             = "types"
   function          = "function"
   f                 = "f"
   print             = "print"
@@ -111,12 +112,12 @@ ArrayLiteral = "[" (numLit)* "]"
   index = "index"
   c = "c"
   con = "con"
-  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index | c | b) ~idchar
+  keyword           = (f | function | print | pl | p | l | for | if | elif | else | break | return | r | true | false | or | and | im | mu | in | index | c | b | types) ~idchar
   id                = ~keyword letter idchar*
   idchar            = letter | digit | "_"
   numeral           = digit+ ("." digit+)? (("E"|"e") ("+"|"-")? digit+)?
   relop             = "<=" | "<" | "=" | "!=" | ">=" | ">"
-  type = ~keyword letter+
+  type = ~keyword letter+ ("[]")*
  
   space             += "#" (~"\n" any)*                                                 --comment
 }

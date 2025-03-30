@@ -16,6 +16,7 @@ export const floatType = "float";
 export const stringType = "string";
 export const voidType = "void";
 export const anyType = "any";
+export const objectType = "object";
 
 export function intrinsicFunction(name, type) {
   return { kind: "Function", name, type, intrinsic: true };
@@ -140,6 +141,7 @@ export const standardLibrary = Object.freeze({
   string: stringType,
   void: voidType,
   any: anyType,
+  object: objectType,
   print: intrinsicFunction("print", anyToVoidType),
   p: intrinsicFunction("print", anyToVoidType),
   pl: intrinsicFunction("printLine", anyToVoidType),

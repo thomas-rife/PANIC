@@ -52,6 +52,7 @@ const semanticChecks = [
   ["Break", "l i in [1...5] {if i = 3 { b }}"],
   ["Array indexing", "im x: [1 2 3] x[2] p(x[2])"],
   ["Simple class", "c Dog {con(x int y int)f bark(){return x}}"],
+  ["If-elif-else", "if 3 < 3 {} elif 4 > 5 {} else { p(1) }"],
 ];
 
 // Programs that are syntactically correct but have semantic errors

@@ -9,7 +9,7 @@ import * as core from "./core.js";
 import { kMaxLength } from "node:buffer";
 
 class Context {
-  // Like most statically-scoped languages, Carlos contexts will contain a
+  // Like most statically-scoped languages, Panic contexts will contain a
   // map for their locally declared identifiers and a reference to the parent
   // context. The parent of the global context is null. In addition, the
   // context records whether analysis is current within a loop (so we can
@@ -106,23 +106,6 @@ export default function analyze(match) {
     must(e.type?.kind === "ArrayType", "Expected an array", at);
   }
 
-  function mustHaveAnOptionalType(e, at) {
-    must(e.type?.kind === "OptionalType", "Expected an optional", at);
-  }
-
-  function mustHaveAStructType(e, at) {
-    must(e.type?.kind === "StructType", "Expected a struct", at);
-  }
-
-  function mustHaveAnOptionalStructType(e, at) {
-    // Used to check e?.x expressions, e must be an optional struct
-    must(
-      e.type?.kind === "OptionalType" && e.type.baseType?.kind === "StructType",
-      "Expected an optional struct",
-      at
-    );
-  }
-
   function mustBothHaveTheSameType(e1, e2, at) {
     must(
       equivalent(e1.type, e2.type),
@@ -148,24 +131,6 @@ export default function analyze(match) {
     const isCompositeType =
       /StructType|FunctionType|ArrayType|OptionalType/.test(e?.kind);
     must(isBasicType || isCompositeType, "Type expected", at);
-  }
-
-  function mustBeAnArrayType(t, at) {
-    must(t?.kind === "ArrayType", "Must be an array type", at);
-  }
-
-  function includesAsField(structType, type) {
-    // Whether the struct type has a field of type type, directly or indirectly
-    return structType.fields.some(
-      (field) =>
-        field.type === type ||
-        (field.type?.kind === "StructType" && includesAsField(field.type, type))
-    );
-  }
-
-  function mustNotBeSelfContaining(structType, at) {
-    const containsSelf = includesAsField(structType, structType);
-    must(!containsSelf, "Struct type must not be self-containing", at);
   }
 
   function equivalent(t1, t2) {
@@ -255,8 +220,8 @@ export default function analyze(match) {
   }
 
   function mustBeCallable(e, at) {
-    //class constuctors are callable as well
-    const callable = e.type?.kind === "FunctionType";
+    const callable =
+      e.type?.kind === "FunctionType" || e.type?.kind === "ConstructorType";
     must(callable, "Call of non-function or non-constructor", at);
   }
 
@@ -272,15 +237,6 @@ export default function analyze(match) {
 
   function mustBeReturnable(e, { from: f }, at) {
     mustBeAssignable(e, { toType: f.type.returnType }, at);
-  }
-
-  function mustHaveCorrectArgumentCount(argCount, paramCount, at) {
-    const message = `${paramCount} argument(s) required but ${argCount} passed`;
-    must(argCount === paramCount, message, at);
-  }
-
-  function mustBeIterable(e, at) {
-    //TODO
   }
 
   function mustHaveCorrectArgsAndTypes(params, args, at) {
@@ -320,8 +276,6 @@ export default function analyze(match) {
     }
   }
   function checkTypes(params, args, at) {
-    console.log(params, args);
-
     for (let i = 0; i < args.length; i++) {
       let param = params[i];
       let arg = args[i];
@@ -334,6 +288,7 @@ export default function analyze(match) {
 
   function mustBeValidType() {}
   function mustHaveLiteralType() {}
+  function mustBeIterable(e, at) {}
 
   function mustBeAbleToIndex(collection, at) {
     const canIndex =
@@ -371,6 +326,10 @@ export default function analyze(match) {
 
     FuncCall_normal(exp, _open, args, _close) {
       const callee = context.lookup(exp.sourceString);
+
+      console.log(context);
+      console.log(callee);
+
       mustBeCallable(callee, { at: exp });
       const argums = args.children.map((child) => child.rep());
       mustHaveCorrectArgsAndTypes(
@@ -411,7 +370,7 @@ export default function analyze(match) {
     ClassDec(_c, id, ClassBlock) {
       const name = id.sourceString;
       mustNotAlreadyBeDeclared(name, { at: id });
-      context = context.newChildContext({ inClass: true });
+      context = context.newChildContext({ inClass: name });
       const [constructor, functions] = ClassBlock.rep();
       context = context.parent;
       return core.classDeclaration(constructor, functions);
@@ -425,7 +384,12 @@ export default function analyze(match) {
 
     Constructor(_con, _open, params, _close) {
       const parameters = params.children.map((child) => child.rep());
-      return core.constructorCall(parameters);
+      const constructor = core.constructorCall(parameters);
+      const paramTypes = parameters.map((param) => param.type);
+      const type = core.functionType(paramTypes, core.anyType, true);
+      const fun = core.func(context.inClass, parameters, [], type);
+      context.parent.add(context.inClass, fun);
+      return constructor;
     },
 
     ClassParam_default(id, _colon, exp) {
@@ -464,6 +428,27 @@ export default function analyze(match) {
       );
       context.add(id.sourceString, variable);
       return core.variableDeclaration(variable, initializer);
+    },
+
+    Statement_assign(variable, _colon, exp) {
+      const source = exp.rep();
+      const target = variable.rep();
+      mustBeMutable(target, { at: variable });
+      mustBeAssignable(source, { toType: target.type }, { at: variable });
+      return core.assignment(target, source);
+    },
+
+    Statement_break(breakKeyword) {
+      mustBeInLoop({ at: breakKeyword });
+      return core.breakStatement;
+    },
+
+    Statement_return(ret, exp) {
+      mustBeInAFunction({ at: ret });
+      // mustReturnSomething(context.function, { at: ret });
+      const returnExp = exp.rep();
+      // mustBeReturnable(returnExp, { from: context.function }, { at: exp });
+      return core.returnStatement(returnExp);
     },
 
     LoopStmt_for(_l, id, exp, block) {
@@ -537,7 +522,7 @@ export default function analyze(match) {
 
       const elsePart = otherwise.children.map((child) => handleElse(child));
       function handleElse(node) {
-        if (node.children.length === 3) {
+        if (node.children.length === 2) {
           const block = node.children[1];
           context = context.newChildContext();
           const consequent = block.rep();
@@ -652,29 +637,8 @@ export default function analyze(match) {
       return core.range(left.rep(), right.rep(), "+", BigInt(1));
     },
 
-    Statement_assign(variable, _colon, exp) {
-      const source = exp.rep();
-      const target = variable.rep();
-      mustBeMutable(target, { at: variable });
-      mustBeAssignable(source, { toType: target.type }, { at: variable });
-      return core.assignment(target, source);
-    },
-
     Block(_open, statements, _close) {
       return statements.children.map((s) => s.rep());
-    },
-
-    Statement_break(breakKeyword) {
-      mustBeInLoop({ at: breakKeyword });
-      return core.breakStatement;
-    },
-
-    Statement_return(ret, exp) {
-      mustBeInAFunction({ at: ret });
-      // mustReturnSomething(context.function, { at: ret });
-      const returnExp = exp.rep();
-      // mustBeReturnable(returnExp, { from: context.function }, { at: exp });
-      return core.returnStatement(returnExp);
     },
 
     ArrayLiteral(_open, exps, _close) {

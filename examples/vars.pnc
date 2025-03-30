@@ -1,4 +1,7 @@
-c Dog {
- con(x int y int)
-  f bark(){return x}
+c Dog{
+    con(x int y: [1 2 3] z: "string")
+    f bark(s string)-> string{ r s}
 }
+
+im x: Dog(3)
+x.bark(1.0 )
