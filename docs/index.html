@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PANIC</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <nav>
+        <ul class="nav-links">
+          <li>
+            <a href="https://github.com/thomas-rife/PANIC">GitHub Repository</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="logo">
+      <h1 class="title">PANIC</h1>
+      <img class="logo-img" src="logo.png" alt="PANIC Logo" />
+    </div>
+
+    <div class="blocks">
+      <h1 class="story">Our Story</h1>
+      <div class="content">
+        <p>
+          As college students, time is always in short supply. Traditional
+          programming languages require complex syntax and deep familiarity with
+          detailed documentation, which can slow you down when you’re racing
+          against a deadline. The PANIC programming language was designed with
+          this in mind, offering a streamlined, efficient approach that cuts the
+          complexity so you can write, debug, and run your programs quickly,
+          even if you only have a quick minute to get it done.
+        </p>
+        <br />
+        <p>
+          PANIC achieves this efficiency by blending shorthand abbreviations
+          with the option to use full descriptive commands. This approach allows
+          users to choose a more concise, rapid coding style when speed is
+          essential, or a more traditional format when clarity and readability
+          are more important. PANIC's flexible keywords and simple notation
+          reduce the risk of small syntax errors preventing your program from
+          running smoothy the first time. This also makes debugging faster, more
+          intuitive and much easier to understand.
+        </p>
+        <br />
+
+        <p>
+          Ultimately, PANIC is more than just another coding language, it’s a
+          practical tool for modern software challenges. Whether you’re tackling
+          an urgent assignment or experimenting with new ideas, PANIC provides a
+          flexible, high-performance environment that allows you to focus on
+          scripting efficiently rather than fighting with a language's verbose
+          syntax. This makes it an ideal choice for both the procrastinating
+          student and the experienced developer seeking a fresh approach to
+          development.
+        </p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="features">
+      <h1>Features</h1>
+      <ul class="cards">
+        <li class="card">
+          <div>
+            <h3 class="card-title">
+              Targeted for Learners &amp; Hardcore Programmers
+            </h3>
+            <div class="card-content">
+              <p>
+                Minimal syntactic sugar to let you focus on scripting
+                efficiently
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Shorthand Syntax</h3>
+            <div class="card-content">
+              <p>
+                Single-letter abbreviations (e.g.
+                <code>f</code> for function, <code>r</code> for return) for
+                quick scripting
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Fast Scripting and Debugging</h3>
+            <div class="card-content">
+              <p>Designed for rapid development with easy-to-use shortcuts</p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Python-Inspired Indentation</h3>
+            <div class="card-content">
+              <p>
+                Uses indentation instead of brackets, with multiple keyword
+                spellings (e.g.
+                <code>p</code> and <code>print</code>)
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Streamlined Loop Ranges</h3>
+            <div class="card-content">
+              <p>
+                Uses the
+                <code>...</code> operator for loop ranges, inspired by Swift
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Strong Static Typing</h3>
+            <div class="card-content">
+              <p>Employs a robust type system similar to Swift’s</p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Flexible Function Calls</h3>
+            <div class="card-content">
+              <p>
+                Supports keyword and positional arguments as well as parameters,
+                similar to Python
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="card">
+          <div>
+            <h3 class="card-title">Functional Programming Features</h3>
+            <div class="card-content">
+              <p>
+                First-class functions with built-in support for function
+                composition and pipelining using left/right arrow notation
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+    <div class="blocks">
+      <h1>Example Programs:</h1>
+      <!-- Example 0: Hello World -->
+
+      <div class="ex">
+        <h2>Example 0: Hello World</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics"># Print a message
+p "Hello, World!" </code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">console.log("Hello, World!");</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          Starting out simple, printing is very easy in PANIC, simply write
+          <code>print</code> or <code>p</code>. Furthermore, one can either use
+          parenthesis or not for function calls.
+        </p>
+      </div>
+      <div class="ex">
+        <!-- Example 1: Comparison function -->
+        <h2>Example 1: Comparision function</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">f compare_numbers(a, b):
+  if a = b:
+    p a, " = ", b
+  elif a < b:
+    p a, " < ", b
+  else:
+    p a, " > ", b
+
+# Variable Assignment
+n1: 10 
+n2: 20
+
+# Function Call
+compare_numbers(n1, n2)  </code></pre>
+            </td>
+            <td>
+              <pre><code>function compareNumbers(a, b) {
+  if (a === b) {
+    console.log(a + " = " + b);
+  } else if (a < b) {
+    console.log(a + " < " + b);
+  } else {
+    console.log(a + " > " + b);
+  }
+}
+
+let n1 = 10;
+let n2 = 20;
+
+compareNumbers(n1, n2);</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          In PANIC function declarations need to have explicitly typed
+          parameters. In addition, if, else, and elif statements are very
+          Pythonic, however, they don't need to end with colons. Variable
+          assignments follow the form
+          <code>name: literal</code>. This is because we use the equals sign to
+          test for equality. Because the function returns void the return type
+          does not need to explicitly be marked, similar to Swift.
+        </p>
+      </div>
+
+      <div class="ex">
+        <!-- Example 2: Fibonacci -->
+        <h2>Example 2: Fibonacci</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">f fibonacci(n):
+  # Initialize starting values
+  a: 0  
+  b: 1
+
+  # Loop from 0 to n
+  l i in [0...n]:  
+    p a
+    next: a + b
+    a: b
+    b: next
+
+num_terms: 10
+
+fibonacci(num_terms)</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">function fibonacci(n) {
+  let a = 0,
+      b = 1;
+
+  for (let i = 0; i < n; i++) {
+    console.log(a);
+    let next = a + b;
+    a = b;
+    b = next;
+  }
+}
+
+let numTerms = 10;
+
+fibonacci(numTerms);</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          In PANIC <code>l</code> stands for loop and it is used both for whiles
+          and for loops. We use the <code>...</code> for shorthand notation to
+          make ranges. Ranges start from the first number and include the last
+          number, but don't go above it.
+        </p>
+      </div>
+
+      <div class="ex">
+        <!-- Example 3: Factorials with tail recursion -->
+        <h2>Example 3: Factorials with tail recursion</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">f factorial(n):
+  if n = 0:
+    r 1
+  elif n = 1:
+    r 1
+  r n*factorial(n-1)
+
+  p factorial(5)</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">function factorial(n) {
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  return n * factorial(n - 1);
+}
+
+console.log(factorial(5));</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          Here we have to declare a return type for the function factorial.
+          Also,
+          <code>or</code> is spelled out instead of being <code>||</code>.
+        </p>
+      </div>
+
+      <div class="ex">
+        <!-- Example 4: Recursive looping -->
+        <h2>Example 4: Recursive looping</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">l i in [1...5]:
+  l j in i:
+    p "*"
+      p " "</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
+  let row = "";
+  for (let j = 1; j <= i; j++) {
+    row += "* ";
+  }
+  console.log(row);
+}</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          In PANIC arguments to a function can either be positional or keyword.
+          Positional arguments come first, then keyword args, and
+          <code>...</code> is used to collect the rest of the arguments into an
+          array.
+        </p>
+      </div>
+
+      <div class="ex">
+        <!-- Example 5: Anonymous Functions, Range and Maps -->
+        <h2>Example 5: Anonymous Functions, Range and Maps</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">d int: int x r x + 1
+b: [1...7, +2]
+b -> d -> p     
+p <- d <- b</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">d = (x) => x + 1;
+b = [1, 3, 5, 7];
+x = b.map(d);
+console.log(x);</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          This is an example of functional programming and first-class functions
+          in our language. In our language, the arrows show the flow of data,
+          which can be written both ways. Despite the way it is written the
+          function composition will still be the same: in this case
+          <code>p(d(b))</code>.
+        </p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="team">
+      <div class="team-member">
+        <img src="logo.png" alt="PANIC Logo" />
+        <h3>Brian Bowers</h3>
+        <p>
+          Brian Bowers is a junior Computer Science student at Loyola Marymount
+          University. He’s passionate about coding and constantly exploring new
+          technologies—from web development to machine learning. Thomas thrives
+          on the challenges of hackathons and collaborative open-source
+          projects, always seeking innovative solutions to real-world problems.
+          When he’s not debugging or learning a new programming language, he
+          enjoys participating in tech meetups and experimenting with emerging
+          technologies.
+        </p>
+      </div>
+      <div class="team-member">
+        <img src="thomas.jpeg" alt="PANIC Logo" />
+        <h3>Thomas Rife</h3>
+        <p>
+          Thomas Rife is a junior Computer Science student at Loyola Marymount
+          University. He’s passionate about coding and constantly exploring new
+          technologies—from web development to machine learning. Thomas thrives
+          on the challenges of hackathons and collaborative open-source
+          projects, always seeking innovative solutions to real-world problems.
+          When he’s not debugging or learning a new programming language, he
+          enjoys participating in tech meetups and experimenting with emerging
+          technologies.
+        </p>
+      </div>
+      <div class="team-member">
+        <img src="august.jpeg" alt="August Profile" />
+        <h3>August Wetterau</h3>
+        <p>
+          August Wetterau is a junior at Loyola Marymount University, majoring
+          in Computer Science with a minor in Business Administration. He is
+          passionate about developing innovative artificial intelligence
+          solutions and cutting-edge mobile applications. With a keen interest
+          in technology and a commitment to excellence, August continuously
+          seeks opportunities to push the boundaries in these rapidly evolving
+          fields.
+        </p>
+      </div>
+      <div class="team-member">
+        <img src="logo.png" alt="PANIC Logo" />
+        <h3>Walter Campos</h3>
+        <p>
+          Walter Campos is a junior Computer Science student at Loyola Marymount
+          University. He’s passionate about coding and constantly exploring new
+          technologies—from web development to machine learning. Thomas thrives
+          on the challenges of hackathons and collaborative open-source
+          projects, always seeking innovative solutions to real-world problems.
+          When he’s not debugging or learning a new programming language, he
+          enjoys participating in tech meetups and experimenting with emerging
+          technologies.
+        </p>
+      </div>
+    </div>
+    <footer class="site-footer"></footer>
+  </body>
+</html>
