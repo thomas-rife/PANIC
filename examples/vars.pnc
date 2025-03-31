@@ -1,4 +1,1 @@
-c Dog {
- con(x int y int)
-  f bark(){return x}
-}
+f func(x int y: 3){} func(3 4)
