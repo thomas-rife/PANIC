@@ -259,8 +259,7 @@ z = [1, 2, 3, 4, 5];
 ```
 
 </td>
-<td>
-
+</table>
 ### Example 6: Classes
 
 This is how classes are done in PANIC compared to JavaScript. Classes are defined using `c` with constructors being defined using `con`. Objects can be created as immutable or mutable.
@@ -307,7 +306,7 @@ console.log(dog.bark("woof"));
 ```
 
 </td>
-<td>
+</table>
 
 ### Example 7: Anonymous Functions, Range and Maps
 
