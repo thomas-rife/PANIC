@@ -365,20 +365,22 @@ console.log(x);
 - Functions, variables and classes must have unique names
 - Parameters must have different names
 - Function calls must have correct number of arguments
-- Function arguments must be the same type as expected parameter types
-- Class stuff HERE
-- For loops must be over items that are iterable
--
--
--
--
--
--
--
--
--
--
--
--
--
--
+- Function arguments must be the same type as expected parameter types, in the case if default parameters, params are matched from left to right
+- Can only return from a function
+- Can only break from within a loop
+- For loops must be over items that are iterable (ranges, arrays, strings, etc)
+- Arrays must contain all the same types elements
+- Ids used in expressions must exist
+- When adding to a string, must be of type string
+- For most expressions, such as add, multiply, power, you can apply with one being type int and the other type float
+- When comparing though, they must be the same type (2 < 2.000000001 don't want this happening)
+- Can only index and slice arrays
+- When assigning to a variable it must be mutable
+- When assigning to a variable the target type and value type must match (if the type is an array, the array dimensions must match)
+- Checking array indexing bounds will be deferred to run-time
+- Can only call functions, not expressions or ids
+- When using a class method on an object, the method must be declared in the class definition of the object
+- When calling a constructor the params must be correct both in type and number
+- Can return from any function, regardless of it's return type, but if the function is marked as void, you can not return a value
+- Whenever there is a test, in an if statement or in a while or elsewhere, must have type boolean
+- and others

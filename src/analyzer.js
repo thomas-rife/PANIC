@@ -524,7 +524,6 @@ export default function analyze(match) {
     },
 
     Statement_assign(variable, _colon, exp) {
-      // need to fix assignment with void functions
       const source = exp.rep();
       const target = variable.rep();
       checkIsVariableOrArrayIndex(target, variable.sourceString, {
