@@ -1,8 +1,11 @@
 # PANIC Programming Langauage
 
 ### By Thomas Rife, August Wetterau, Brian Bowers, Walter Campos
-### [Link to Info Site] (https://thomas-rife.github.io/PANIC/)
+
 ![alt text](docs/logo.png)
+
+### Check out our website with more info about PANIC
+- https://thomas-rife.github.io/PANIC/
 
 ## Introduction
 
