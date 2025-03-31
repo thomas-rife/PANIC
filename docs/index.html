@@ -98,18 +98,6 @@
         </li>
         <li class="card">
           <div>
-            <h3 class="card-title">Python-Inspired Indentation</h3>
-            <div class="card-content">
-              <p>
-                Uses indentation instead of brackets, with multiple keyword
-                spellings (e.g.
-                <code>p</code> and <code>print</code>)
-              </p>
-            </div>
-          </div>
-        </li>
-        <li class="card">
-          <div>
             <h3 class="card-title">Streamlined Loop Ranges</h3>
             <div class="card-content">
               <p>
@@ -138,17 +126,6 @@
             </div>
           </div>
         </li>
-        <li class="card">
-          <div>
-            <h3 class="card-title">Functional Programming Features</h3>
-            <div class="card-content">
-              <p>
-                First-class functions with built-in support for function
-                composition and pipelining using left/right arrow notation
-              </p>
-            </div>
-          </div>
-        </li>
       </ul>
     </div>
 
@@ -156,7 +133,6 @@
     <div class="blocks">
       <h1>Example Programs</h1>
       <!-- Example 0: Hello World -->
-
       <div class="ex">
         <h2>Example 0: Hello World</h2>
         <table class="examples">
@@ -175,14 +151,15 @@ p "Hello, World!" </code></pre>
           </tr>
         </table>
         <p>
-          Starting out simple, printing is very easy in PANIC, simply write
-          <code>print</code> or <code>p</code>. Furthermore, one can either use
-          parenthesis or not for function calls.
+          Starting out simple, printing is very easy in PANIC. Simply write
+          <code>print</code> or <code>p</code>, and you can use parentheses or
+          not for function calls.
         </p>
       </div>
+
+      <!-- Example 1: Comparison Function -->
       <div class="ex">
-        <!-- Example 1: Comparison function -->
-        <h2>Example 1: Comparision function</h2>
+        <h2>Example 1: Comparison Function</h2>
         <table class="examples">
           <tr>
             <th>PANIC</th>
@@ -190,29 +167,34 @@ p "Hello, World!" </code></pre>
           </tr>
           <tr>
             <td>
-              <pre><code class="language-panics">f compare_numbers(a, b):
-  if a = b:
-    p a, " = ", b
-  elif a < b:
-    p a, " < ", b
-  else:
-    p a, " > ", b
+              <pre><code class="language-panics"># Function Definition 
+f compare_numbers(x int y int) {  
+  if x = y {
+    pl (x "is equal to" y)
+  }
+  elif x < y {
+    pl (x "is less than" y)
+  }
+  else {
+    pl (x "is greater than" y)
+  }
+}
 
 # Variable Assignment
-n1: 10 
-n2: 20
+im n1: 10 
+im n2: 20
 
-# Function Call
-compare_numbers(n1, n2)  </code></pre>
+# Call the function
+compare_numbers(n1 n2)</code></pre>
             </td>
             <td>
-              <pre><code>function compareNumbers(a, b) {
+              <pre><code class="language-javascript">function compareNumbers(a, b) {
   if (a === b) {
-    console.log(a + " = " + b);
+    console.log(a + " is equal to " + b);
   } else if (a < b) {
-    console.log(a + " < " + b);
+    console.log(a + " is less than " + b);
   } else {
-    console.log(a + " > " + b);
+    console.log(a + " is greater than " + b);
   }
 }
 
@@ -224,18 +206,16 @@ compareNumbers(n1, n2);</code></pre>
           </tr>
         </table>
         <p>
-          In PANIC function declarations need to have explicitly typed
-          parameters. In addition, if, else, and elif statements are very
-          Pythonic, however, they don't need to end with colons. Variable
-          assignments follow the form
-          <code>name: literal</code>. This is because we use the equals sign to
-          test for equality. Because the function returns void the return type
-          does not need to explicitly be marked, similar to Swift.
+          In PANIC, function declarations have explicitly typed parameters. The
+          conditional statements (if, elif, else) resemble Python but without
+          requiring colons, and variable assignments use the form
+          <code>name: literal</code> (since the equals sign is used for equality
+          tests).
         </p>
       </div>
 
+      <!-- Example 2: Fibonacci -->
       <div class="ex">
-        <!-- Example 2: Fibonacci -->
         <h2>Example 2: Fibonacci</h2>
         <table class="examples">
           <tr>
@@ -244,27 +224,30 @@ compareNumbers(n1, n2);</code></pre>
           </tr>
           <tr>
             <td>
-              <pre><code class="language-panics">f fibonacci(n):
+              <pre><code class="language-panics">f fibonacci(n int) {
   # Initialize starting values
-  a: 0  
-  b: 1
+  mu x: 0 
+  mu y: 1
 
-  # Loop from 0 to n
-  l i in [0...n]:  
-    p a
-    next: a + b
-    a: b
-    b: next
+  # Loop from 0 to n 
+  l i in [0...n] {  
+    p(x " ")
+    mu z: x
+    x : y
+    y: z + x
+  }
 
-num_terms: 10
+  # Use "r" for return
+  r 
+}
 
+im num_terms: 10
 fibonacci(num_terms)</code></pre>
             </td>
             <td>
               <pre><code class="language-javascript">function fibonacci(n) {
   let a = 0,
       b = 1;
-
   for (let i = 0; i < n; i++) {
     console.log(a);
     let next = a + b;
@@ -274,22 +257,22 @@ fibonacci(num_terms)</code></pre>
 }
 
 let numTerms = 10;
-
 fibonacci(numTerms);</code></pre>
             </td>
           </tr>
         </table>
         <p>
-          In PANIC <code>l</code> stands for loop and it is used both for whiles
-          and for loops. We use the <code>...</code> for shorthand notation to
-          make ranges. Ranges start from the first number and include the last
-          number, but don't go above it.
+          In PANIC, <code>l</code> stands for loop, which is used for both for
+          and while loops. Mutable variables are denoted as <code>mu</code> and
+          immutable ones are denoted as <code>im</code>. Ranges are written
+          using <code>...</code>, which includes the starting and ending
+          numbers.
         </p>
       </div>
 
+      <!-- Example 3: Factorials with Tail Recursion -->
       <div class="ex">
-        <!-- Example 3: Factorials with tail recursion -->
-        <h2>Example 3: Factorials with tail recursion</h2>
+        <h2>Example 3: Factorials with Tail Recursion</h2>
         <table class="examples">
           <tr>
             <th>PANIC</th>
@@ -297,14 +280,13 @@ fibonacci(numTerms);</code></pre>
           </tr>
           <tr>
             <td>
-              <pre><code class="language-panics">f factorial(n):
-  if n = 0:
-    r 1
-  elif n = 1:
-    r 1
-  r n*factorial(n-1)
-
-  p factorial(5)</code></pre>
+              <pre><code class="language-panics">f factorial(n int) -> int {
+  if n = 0 or n = 1 {
+    r 1 
+  }
+  r n * factorial(n-1)
+}
+p(factorial(5))</code></pre>
             </td>
             <td>
               <pre><code class="language-javascript">function factorial(n) {
@@ -319,15 +301,15 @@ console.log(factorial(5));</code></pre>
           </tr>
         </table>
         <p>
-          Here we have to declare a return type for the function factorial.
-          Also,
-          <code>or</code> is spelled out instead of being <code>||</code>.
+          In PANIC, you must declare a return type for the function. Also,
+          logical operators like <code>or</code> are spelled out instead of
+          using <code>||</code>.
         </p>
       </div>
 
+      <!-- Example 4: Recursive Looping -->
       <div class="ex">
-        <!-- Example 4: Recursive looping -->
-        <h2>Example 4: Recursive looping</h2>
+        <h2>Example 4: Recursive Looping</h2>
         <table class="examples">
           <tr>
             <th>PANIC</th>
@@ -335,10 +317,13 @@ console.log(factorial(5));</code></pre>
           </tr>
           <tr>
             <td>
-              <pre><code class="language-panics">l i in [1...5]:
-  l j in i:
-    p "*"
-      p " "</code></pre>
+              <pre><code class="language-panics">l i in [1...5] {
+  l j in i {
+    p("*")
+  }
+  p(" ")
+}
+</code></pre>
             </td>
             <td>
               <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
@@ -352,16 +337,149 @@ console.log(factorial(5));</code></pre>
           </tr>
         </table>
         <p>
-          In PANIC arguments to a function can either be positional or keyword.
-          Positional arguments come first, then keyword args, and
-          <code>...</code> is used to collect the rest of the arguments into an
+          In PANIC, function arguments can be either positional or
+          keyword-based. Positional arguments come first, then keyword
+          arguments, and
+          <code>...</code> is used to capture additional arguments into an
           array.
         </p>
       </div>
 
+      <!-- Example 5: Arrays -->
       <div class="ex">
-        <!-- Example 5: Anonymous Functions, Range and Maps -->
-        <h2>Example 5: Anonymous Functions, Range and Maps</h2>
+        <h2>Example 5: Arrays</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">
+# Create immutable array ranging from 1 to 20, each multiplied by 2
+im x: [1...20, *2]
+
+# Create a nested array structure
+im y: [[[x]]]
+
+# Access the first element of the nested array
+mu z: y[0][0][0]
+
+# Modify the value of z to a new array
+z: [1 2 3 4 5]
+              </code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">
+const x = Array.from({ length: 20 }, (_, i) => (i + 1) * 2);
+
+const y = [[[x]]];
+
+let z = y[0][0][0];
+
+z = [1, 2, 3, 4, 5];
+</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          This is how arrays are done in PANIC compared to JavaScript. The
+          arrays all have types and they are all checked.
+        </p>
+      </div>
+
+      <!-- Example 6: Classes -->
+      <div class="ex">
+        <h2>Example 6: Classes</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics"># Define a class Dog
+c Dog {
+  # Define constructor
+  con(name string)
+    f bark(sound string) -> string {
+        im greet: name + " says " + sound
+        return greet
+    }
+}
+
+# Create a new Dog
+im dog: Dog("rocky")
+
+dog.bark("woof")</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">class Dog {
+  constructor(name) {
+    this.name = name;
+  }
+  
+  bark(sound) {
+    const greet = this.name + " says " + sound;
+    return greet;
+  }
+}
+
+const dog = new Dog("rocky");
+console.log(dog.bark("woof"));</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>
+          This is how classes are done in PANIC compared to JavaScript. Classes
+          are defined using `c` with constructors being defined using `con`.
+          Objects can be created as immutable or mutable.
+        </p>
+      </div>
+
+      <!-- Example 7: New Example Placeholder -->
+      <!-- <div class="ex">
+        <h2>Example 7: New Example Placeholder</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">// TODO: Add your PANIC example here</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">// TODO: Add your JS example here</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>This is a placeholder for your custom example.</p>
+      </div> -->
+
+      <!-- Example 8: New Example Placeholder -->
+      <!-- <div class="ex">
+        <h2>Example 8: New Example Placeholder</h2>
+        <table class="examples">
+          <tr>
+            <th>PANIC</th>
+            <th>JS</th>
+          </tr>
+          <tr>
+            <td>
+              <pre><code class="language-panics">// TODO: Add your PANIC example here</code></pre>
+            </td>
+            <td>
+              <pre><code class="language-javascript">// TODO: Add your JS example here</code></pre>
+            </td>
+          </tr>
+        </table>
+        <p>This is a placeholder for your custom example.</p>
+      </div> -->
+
+      <!-- Example 9: Anonymous Functions, Range and Maps (Functional Programming) -->
+      <div class="ex">
+        <h2>Example 7: Anonymous Functions, Range and Maps</h2>
         <table class="examples">
           <tr>
             <th>PANIC</th>
@@ -383,11 +501,10 @@ console.log(x);</code></pre>
           </tr>
         </table>
         <p>
-          This is an example of functional programming and first-class functions
-          in our language. In our language, the arrows show the flow of data,
-          which can be written both ways. Despite the way it is written the
-          function composition will still be the same: in this case
-          <code>p(d(b))</code>.
+          This final example demonstrates functional programming features such
+          as anonymous functions, mapping, and range-based array construction.
+          The arrows indicate data flow, and function composition is achieved,
+          for instance, by <code>p(d(b))</code>.
         </p>
       </div>
     </div>
