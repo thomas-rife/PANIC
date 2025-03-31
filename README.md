@@ -4,7 +4,7 @@
 
 ![alt text](docs/logo.png)
 
-### [Check out our website with more info about PANIC](https://thomas-rife.github.io/PANIC/) 
+### [Check out our website with more info about PANIC](https://thomas-rife.github.io/PANIC/)
 
 ## Introduction
 
@@ -49,7 +49,11 @@ console.log("Hello, World!");
 
 ### Example 1: Comparison function
 
-In PANIC function declarations need to have explicitly typed parameters. In addition, if, else, and elif statements are very Pythonic, however, they don't need to end with colons. Variable assignments follow the form `name: literal`. This is because we use the equals sign to test for equality. Because the function returns void the return type does not need to explicitly be marked, similar to Swift.
+          In PANIC, function declarations have explicitly typed parameters. The
+          conditional statements (if, elif, else) resemble Python but without
+          requiring colons, and variable assignments use the form
+          ```name: literal``` (since the equals sign is used for equality
+          tests).
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -98,7 +102,10 @@ compareNumbers(n1, n2);
 
 ### Example 2: Fibonacci
 
-In PANIC `l` stands for loop and it is used both for whiles and for loops. We use the `...` for shorthand notation to make ranges. Ranges start from the first number and include the last number, but don't go above it.
+          In PANIC, ```l``` stands for loop, which is used for both for
+          and while loops. Mutable variables are denoted as ```mu``` and
+          immutable ones are denoted as ```im```. Ranges are written using
+          ```...```, which includes the starting and ending numbers.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -109,7 +116,7 @@ In PANIC `l` stands for loop and it is used both for whiles and for loops. We us
 f fibonacci(n int){
   mu x: 0  # Initialize starting values
   mu y: 1
-  l i in [0...n]{  # Loop from 0 to n 
+  l i in [0...n]{  # Loop from 0 to n
     p(x " ")
     mu z: x
     x : y
@@ -145,7 +152,9 @@ fibonacci(numTerms);
 
 ### Example 3: Factorials with tail recursion
 
-Here we have to declare a return type for the function factorial. Also, `or` is spelled out instead of being `||`.
+          In PANIC, you must declare a return type for the function. Also,
+          logical operators like ```or``` are spelled out instead of
+          using ```||```.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -155,7 +164,7 @@ Here we have to declare a return type for the function factorial. Also, `or` is 
 ```PANIC
 f factorial(n int) -> int {
   if n = 0 or n = 1 {
-    r 1 
+    r 1
   }
   r n*factorial(n-1)
 }
@@ -181,7 +190,7 @@ console.log(factorial(5));
 
 ### Example 4: Recursive looping
 
-In PANIC arguments to a function can either be positional or keyword. Positional arguments come first, then keyword args, and `...` is used to collect the rest of the arguments into an array. Here we utilize keyword arguments by calling print with `end=" "`.
+In PANIC, arguments to a function can either be positional or keyword. Positional arguments come first, then keyword args, and `...` is used to collect the rest of the arguments into an array.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -213,7 +222,88 @@ for (let i = 1; i <= 5; i++) {
 </td>
 </table>
 
-### Example 5: Anonymous Functions, Range and Maps
+### Example 5: Arrays
+
+This is how arrays are done in PANIC compared to JavaScript. The arrays all have types and they are all checked.
+
+<table>
+<tr> <th>PANIC</th><th>JS</th><tr>
+</tr>
+<td>
+
+```PANIC
+# Create immutable array ranging from 1 to 20, each multiplied by 2
+im x: [1...20, *2]
+
+# Create a nested array structure
+im y: [[[x]]]
+
+# Access the first element of the nested array
+mu z: y[0][0][0]
+
+# Modify the value of z to a new array
+z: [1 2 3 4 5]
+```
+
+</td>
+<td>
+
+```javascript
+const x = Array.from({ length: 20 }, (_, i) => (i + 1) * 2);
+
+const y = [[[x]]];
+
+let z = y[0][0][0];
+
+z = [1, 2, 3, 4, 5];
+```
+
+### Example 6: Classes
+
+This is how classes are done in PANIC compared to JavaScript. Classes are defined using `c` with constructors being defined using `con`. Objects can be created as immutable or mutable.
+
+<table>
+<tr> <th>PANIC</th><th>JS</th><tr>
+</tr>
+<td>
+
+```PANIC
+# Define a class Dog
+c Dog {
+  # Define constructor
+  con(name string)
+    f bark(sound string) -> string {
+        im greet: name + " says " + sound
+        return greet
+    }
+}
+
+# Create a new Dog
+im dog: Dog("rocky")
+
+dog.bark("woof")
+```
+
+</td>
+<td>
+
+```javascript
+class Dog {
+  constructor(name) {
+    this.name = name;
+  }
+
+  bark(sound) {
+    const greet = this.name + " says " + sound;
+    return greet;
+  }
+}
+
+const dog = new Dog("rocky");
+console.log(dog.bark("woof"));
+```
+
+### Example 7: Anonymous Functions, Range and Maps
 
 This is an example of functional programming and first-class functions in our language. In our language, the arrows show the flow of data, which can be written both ways. Despite the way it is written the function composition will still be the same: in this case `p(d(b))`.
 
@@ -241,15 +331,15 @@ console.log(x);
 </td>
 </table>
 
-
 ## List of Semantic Checks
+
 - Functions, variables and classes must have unique names
 - Parameters must have different names
 - Function calls must have correct number of arguments
 - Function arguments must be the same type as expected parameter types
 - Class stuff HERE
 - For loops must be over items that are iterable
-- 
+-
 -
 -
 -
