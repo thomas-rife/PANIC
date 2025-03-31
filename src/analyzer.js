@@ -174,7 +174,7 @@ export default function analyze(match) {
       check(!returnExp, message, at);
     } else {
       const returnExpType = getType(returnExp);
-      const message = `Unable to return ${returnType} from function marked to return ${returnExpType}.`;
+      const message = `Unable to return ${returnExpType} from function marked to return ${returnType}.`;
       check(returnType === returnExpType, message, at);
     }
   }
