@@ -1,12 +1,14 @@
-# PANIC Langauage
+# PANIC Programming Langauage
 
 ### By Thomas Rife, August Wetterau, Brian Bowers, Walter Campos
 
 ![alt text](docs/logo.png)
 
+www.thomas-rife.github.io/PANIC
+
 ## Introduction
 
-- As college students, we don't have a ton of time to complete every assignment. Some of the languages we use require complex syntax and deep knowledge of documentation. When trying to complete something quickly, it's difficult to finish when simple spelling errors or syntax errors are preventing you from turning in your assignment. PANIC is meant to be a quick, fast, and efficient language so that if you have waited until the last minute to complete a coding assignment, you can quickly write, debug, and run so that you finish on time. The shorthand abbreviations combined with the full words allow users to be as verbose as they want, while simultaneously allowing them to script very efficiently.
+As college students, we don't have a ton of time to complete every assignment. Some of the languages we use require complex syntax and deep knowledge of documentation. When trying to complete something quickly, it's difficult to finish when simple spelling errors or syntax errors are preventing you from turning in your assignment. PANIC is meant to be a quick, fast, and efficient language so that if you have waited until the last minute to complete a coding assignment, you can quickly write, debug, and run so that you finish on time. The shorthand abbreviations combined with the full words allow users to be as verbose as they want, while simultaneously allowing them to script very efficiently.
 
 ## List of Features
 
