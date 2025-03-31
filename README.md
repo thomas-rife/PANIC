@@ -16,9 +16,10 @@ As college students, we don't have a ton of time to complete every assignment. S
 - We wanted the language to focus on scripting speed above all, abbreviations and easy shortcuts are going to make this language quick to write and fast to debug.
 - We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as p and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
 - We took several aspects of other languages that we liked and incorporated their ideas into our language, for example we loved how Swift handled range in loops and wanted to do so something similar. We settled on the `...` operator to show the range of a loop. Also, we tried to avoid other common practices which to us didn't make sense, such as the `==` sign.
-- Strong statically typed language, very similar to Swift's type stystem.
+- Strong statically typed language, very similar to Swift's type system.
 - Keyword and positional arguments as well as rest parameters.
 - First-class functions with support for functional programming, both function composition and pipelining written with either a left or right arrow.
+- Easy way to create ranges using ranges as well as easy array slicing to preserve immutability.
 
 ## Example Programs
 
@@ -32,7 +33,7 @@ Starting out simple, printing is very easy in PANIC, simply write print or p. Fu
 <td>
 
 ```PANIC
-p "Hello, World!" # Print a message
+p("Hello, World!") # Print a message
 
 ```
 
@@ -46,7 +47,7 @@ console.log("Hello, World!");
 </td>
 </table>
 
-### Example 1: Comparision function
+### Example 1: Comparison function
 
 In PANIC function declarations need to have explicitly typed parameters. In addition, if, else, and elif statements are very Pythonic, however, they don't need to end with colons. Variable assignments follow the form `name: literal`. This is because we use the equals sign to test for equality. Because the function returns void the return type does not need to explicitly be marked, similar to Swift.
 
@@ -56,18 +57,21 @@ In PANIC function declarations need to have explicitly typed parameters. In addi
 <td>
 
 ```PANIC
-f compare_numbers(a, b):  # Function Definition
-  if a = b:
-    p a, "is equal to", b
-  elif a < b:
-    p a, "is less than", b
-  else:
-    p a, "is greater than", b
+f compare_numbers(x int y int){  # Function Definition
+  if x = y {
+    pl (x "is equal to" y)
+  }
+  elif x < y {
+    pl (x "is less than" y)
+  }
+  else {
+    pl (x "is greater than" y)
+  }
+}
 
-
-n1: 10 # variable assignment
-n2: 20
-compare_numbers(n1, n2)  # Call the function
+im n1: 10 # variable assignment
+im n2: 20
+compare_numbers(n1 n2)  # Call the function
 ```
 
 </td>
@@ -102,16 +106,18 @@ In PANIC `l` stands for loop and it is used both for whiles and for loops. We us
 <td>
 
 ```PANIC
-f fibonacci(n):
-  a: 0  # Initialize starting values
-  b: 1
-  l i in [0...n]:  # Loop from 0 to n
-    p a
-    a
-    b: b
-    a + b
-
-num_terms: 10
+f fibonacci(n int){
+  mu x: 0  # Initialize starting values
+  mu y: 1
+  l i in [0...n]{  # Loop from 0 to n 
+    p(x " ")
+    mu z: x
+    x : y
+    y: z + x
+  }
+  r # return
+}
+im num_terms: 10
 fibonacci(num_terms)
 ```
 
@@ -147,14 +153,13 @@ Here we have to declare a return type for the function factorial. Also, `or` is 
 <td>
 
 ```PANIC
-f factorial(n):
-  if n = 0:
-    r 1
-  elif n = 1:
-    r 1
-  r n*factorial(n-1)
-
-  p factorial(5)
+f factorial(n int) -> int {
+  if n = 0 or n = 1 {
+    r 1 
+  }
+  r n*factorial(n-1)
+}
+p(factorial(5))
 ```
 
 </td>
@@ -184,10 +189,12 @@ In PANIC arguments to a function can either be positional or keyword. Positional
 <td>
 
 ```PANIC
-l i in [1...5]:
-  l j in i:
-    p "*"
-      p " "
+l i in [1...5]{
+	l j in i {
+	    p("*")
+	}
+	p(" ")
+}
 ```
 
 </td>
