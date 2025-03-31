@@ -84,6 +84,7 @@ const semanticChecks = [
   ["Adding two strings", 'p("hello" + " there")'],
   ["Range with floats", "im x: [2.0...3.0, + 4.0]"],
   ["String multiplication", `p("hello " * 4)`],
+  ["Range with vars", `im x: 3 im y: [x...x, +2]`],
 ];
 
 // Programs that are syntactically correct but have semantic errors

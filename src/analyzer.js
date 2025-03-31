@@ -424,7 +424,25 @@ export default function analyze(match) {
     },
 
     RangeExp(_open, range, _comma, sign, number, _close) {
-      const [start, end] = [range.children[0].rep(), range.children[2].rep()];
+      let start = undefined;
+      let end = undefined;
+      if (range.children[2]._node.ruleName === "id") {
+        end = context.lookup(range.children[2].sourceString);
+        checkExists(end, range.children[2].sourceString, {
+          at: range.children[2],
+        });
+      } else {
+        end = range.children[2].rep();
+      }
+      if (range.children[0]._node.ruleName === "id") {
+        start = context.lookup(range.children[0].sourceString);
+        checkExists(start, range.children[0].sourceString, {
+          at: range.children[0],
+        });
+      } else {
+        start = range.children[0].rep();
+      }
+
       const num = number.children[0]?.sourceString;
       const op = sign.children[0]?.sourceString;
       [start, end, num].every((x) => checkHasIntOrFloatType(x, { at: x }));
@@ -608,6 +626,8 @@ export default function analyze(match) {
     },
 
     Exp6_indexing(id, index) {
+      console.log("this shouldn't be called");
+
       const array = context.lookup(id.sourceString);
       checkExists(array, id.sourceString, { at: id });
       checkHasArrayType(array, { at: id });

@@ -8,17 +8,40 @@
 
 ## Introduction
 
-As college students, we don't have a ton of time to complete every assignment. Some of the languages we use require complex syntax and deep knowledge of documentation. When trying to complete something quickly, it's difficult to finish when simple spelling errors or syntax errors are preventing you from turning in your assignment. PANIC is meant to be a quick, fast, and efficient language so that if you have waited until the last minute to complete a coding assignment, you can quickly write, debug, and run so that you finish on time. The shorthand abbreviations combined with the full words allow users to be as verbose as they want, while simultaneously allowing them to script very efficiently.
+As college students, time is always in short supply. Traditional
+programming languages require complex syntax and deep familiarity with
+detailed documentation, which can slow you down when you’re racing
+against a deadline. The PANIC programming language was designed with
+this in mind, offering a streamlined, efficient approach that cuts the
+complexity so you can write, debug, and run your programs quickly,
+even if you only have a quick minute to get it done.
+
+PANIC achieves this efficiency by blending shorthand abbreviations
+with the option to use full descriptive commands. This approach allows
+users to choose a more concise, rapid coding style when speed is
+essential, or a more traditional format when clarity and readability
+are more important. PANIC's flexible keywords and simple notation
+reduce the risk of small syntax errors preventing your program from
+running smoothy the first time. This also makes debugging faster, more
+intuitive and much easier to understand.
+
+Ultimately, PANIC is more than just another coding language, it’s a
+practical tool for modern software challenges. Whether you’re tackling
+an urgent assignment or experimenting with new ideas, PANIC provides a
+flexible, high-performance environment that allows you to focus on
+scripting efficiently rather than fighting with a language's verbose
+syntax. This makes it an ideal choice for both the procrastinating
+student and the experienced developer seeking a fresh approach to
+development.
 
 ## List of Features
 
 - We wanted to target students, and people who want to focus on programming and not syntactic sugar that many languages like to use. There are very shorthand, single-letter ways to write common statements, including declaring functions as `f`, return being `r`, and so on.
 - We wanted the language to focus on scripting speed above all, abbreviations and easy shortcuts are going to make this language quick to write and fast to debug.
-- We took inspiration from Python's use of indentation to avoid the use of brackets, something we find to be unnecessary. While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as p and print both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
+- While we do encourage the use of shorthand notation, we will also allow multiple spellings of each keyword, such as `p` and `print` both functioning the same. If you scripted something in the shorthand notation and wanted to publish it to make it more readable, you could expand out your keywords and it would function the same.
 - We took several aspects of other languages that we liked and incorporated their ideas into our language, for example we loved how Swift handled range in loops and wanted to do so something similar. We settled on the `...` operator to show the range of a loop. Also, we tried to avoid other common practices which to us didn't make sense, such as the `==` sign.
 - Strong statically typed language, very similar to Swift's type system.
 - Keyword and positional arguments as well as rest parameters.
-- First-class functions with support for functional programming, both function composition and pipelining written with either a left or right arrow.
 - Easy way to create ranges using ranges as well as easy array slicing to preserve immutability.
 
 ## Example Programs
@@ -309,7 +332,7 @@ console.log(dog.bark("woof"));
 </td>
 </table>
 
-### Example 7: Anonymous Functions, Range and Maps
+<!-- ### Example 7: Anonymous Functions, Range and Maps
 
 This is an example of functional programming and first-class functions in our language. In our language, the arrows show the flow of data, which can be written both ways. Despite the way it is written the function composition will still be the same: in this case `p(d(b))`.
 
@@ -335,7 +358,7 @@ console.log(x);
 ```
 
 </td>
-</table>
+</table> -->
 
 ## List of Semantic Checks
 
