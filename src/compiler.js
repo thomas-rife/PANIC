@@ -1,5 +1,5 @@
 import parse from "./parser.js";
-import analyze from "./analyzer2.js";
+import analyze from "./analyzer.js";
 import optimize from "./optimizer.js";
 import generate from "./generator.js";
 

@@ -3,8 +3,7 @@
 // internal representation of the program (pretty close to what is usually
 // called the AST). This representation also includes entities from the
 // standard library, as needed.
-import { emptyArray } from "./core.js";
-import * as core from "./core2.js";
+import * as core from "./core.js";
 
 class Context {
   constructor({
@@ -192,8 +191,7 @@ export default function analyze(match) {
       check(false, message, at);
     }
     if (argLength != maxParams) {
-      const remove =
-        maxParams - (argLength > minParams ? maxParams - argLength : minParams);
+      const remove = maxParams - minParams;
       let correctParams = params;
       for (let i = 0; i < remove; i++) {
         for (let j = correctParams.length - 1; j >= 0; j--) {
@@ -252,6 +250,15 @@ export default function analyze(match) {
     check(methodFound, message, at);
   }
 
+  function checkForUniqueNames(params, at) {
+    const before = params.length;
+    const uniqueNames = new Set();
+    for (let param of params) {
+      uniqueNames.add(param.id);
+    }
+    check(before === uniqueNames.size, "Param names must be unique.", at);
+  }
+
   const builder = match.matcher.grammar.createSemantics().addOperation("rep", {
     Program(statements) {
       return core.program(statements.children.map((s) => s.rep()));
@@ -289,7 +296,7 @@ export default function analyze(match) {
     },
 
     ClassBlock(_open, construct, funcs, _close) {
-      const constructor = construct.children.map((child) => child.rep());
+      const constructor = [construct.rep()];
       const functions = funcs.children.map((child) => child.rep());
       return [constructor, functions];
     },
@@ -366,6 +373,7 @@ export default function analyze(match) {
       context.add(id.sourceString, fun);
       context = context.newChildContext({ inLoop: false, function: fun });
       fun.params = listParams.children.map((child) => child.rep());
+      checkForUniqueNames(fun.params, { at: listParams });
       const returnType = type.children[0]?.sourceString ?? core.voidType;
       checkValidTypeName();
       fun.type = returnType;
@@ -390,7 +398,7 @@ export default function analyze(match) {
       context = context.newChildContext({ inLoop: true });
       context.add(id.sourceString, iterator);
       const body = block.rep();
-      context.parent;
+      context = context.parent;
       return core.forStatement(iterator, collection, body);
     },
 
@@ -406,7 +414,6 @@ export default function analyze(match) {
       const variable = context.lookup(value.sourceString);
       checkExists(variable);
       checkIsIterable(variable, value.sourceString, { at: value });
-
       return variable;
     },
 
@@ -616,13 +623,16 @@ export default function analyze(match) {
           if (Array.isArray(idx[1]) && idx[1].length === 0) {
             idx[1] = undefined;
           }
-          indices[i] = core.range(idx[0], idx[1], idx[2], idx[3]);
+          indices[i] = core.range(idx[0], idx[1], idx[2], idx[3], core.intType);
         }
       }
+
       checkNumIndices(array.type, indices.length, { at: index });
       let type = array.type;
-      for (let _ of indices) {
-        type = type.substring(0, type.length - 2);
+      for (let slice of indices) {
+        if (slice.kind !== "Range") {
+          type = type.substring(0, type.length - 2);
+        }
       }
       return core.arrayIndex(array, indices, type);
     },
@@ -648,7 +658,7 @@ export default function analyze(match) {
       checkAllTheSameType(elements, { at: exps });
       const type = `${getType(elements[0])}[]`;
       const array =
-        elements.length > 0 ? core.array(elements, type) : emptyArray();
+        elements.length > 0 ? core.array(elements, type) : core.emptyArray();
       return array;
     },
 

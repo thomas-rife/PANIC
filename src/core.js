@@ -33,10 +33,6 @@ export function arrayIndex(array, index, type) {
   return { kind: "ArrayIndexing", array, index, type: type };
 }
 
-export function arraySlice(array, slice, type) {
-  return { kind: "ArraySlice", array, slice, index, type: type };
-}
-
 export function emptyArray() {
   return { kind: "EmptyArray", type: anyType };
 }

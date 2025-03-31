@@ -11,11 +11,10 @@ PANIC {
                 | IfStmt
                 | LoopStmt
                 | ClassDec
-                | Exp
                 
     ClassDec = c id ClassBlock
     
-    ClassBlock = "{" Constructor? FuncDec* "}"
+    ClassBlock = "{" Constructor FuncDec* "}"
     
     Constructor = con "(" ClassParam* ")"
     
@@ -76,7 +75,7 @@ PANIC {
 numLit =  digit+ "." digit+ --float
                 | digit+	--int
 
-ArrayLiteral = "[" (ArrayLiteral | Exp)* "]"
+ArrayLiteral =  "[" (ArrayLiteral | Exp)* "]"
 
   RangeExp             = "[" numRange ("," ("+" | "-" | "/" | "**" | "*" | "%") numLit+)? "]"
   numRange          = (numLit| id) through (numLit | id)
