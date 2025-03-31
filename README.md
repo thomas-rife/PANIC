@@ -49,11 +49,11 @@ console.log("Hello, World!");
 
 ### Example 1: Comparison function
 
-          In PANIC, function declarations have explicitly typed parameters. The
-          conditional statements (if, elif, else) resemble Python but without
-          requiring colons, and variable assignments use the form
-          ```name: literal``` (since the equals sign is used for equality
-          tests).
+In PANIC, function declarations have explicitly typed parameters. The
+conditional statements (if, elif, else) resemble Python but without
+requiring colons, and variable assignments use the form
+`name: literal` (since the equals sign is used for equality
+tests).
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -102,10 +102,10 @@ compareNumbers(n1, n2);
 
 ### Example 2: Fibonacci
 
-          In PANIC, ```l``` stands for loop, which is used for both for
-          and while loops. Mutable variables are denoted as ```mu``` and
-          immutable ones are denoted as ```im```. Ranges are written using
-          ```...```, which includes the starting and ending numbers.
+In PANIC, `l` stands for loop, which is used for both for
+and while loops. Mutable variables are denoted as `mu` and
+immutable ones are denoted as `im`. Ranges are written using
+`...`, which includes the starting and ending numbers.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -152,9 +152,9 @@ fibonacci(numTerms);
 
 ### Example 3: Factorials with tail recursion
 
-          In PANIC, you must declare a return type for the function. Also,
-          logical operators like ```or``` are spelled out instead of
-          using ```||```.
+In PANIC, you must declare a return type for the function. Also,
+logical operators like `or` are spelled out instead of
+using `||`.
 
 <table>
 <tr> <th>PANIC</th><th>JS</th><tr>
@@ -258,6 +258,9 @@ let z = y[0][0][0];
 z = [1, 2, 3, 4, 5];
 ```
 
+</td>
+<td>
+
 ### Example 6: Classes
 
 This is how classes are done in PANIC compared to JavaScript. Classes are defined using `c` with constructors being defined using `con`. Objects can be created as immutable or mutable.
@@ -302,6 +305,9 @@ class Dog {
 const dog = new Dog("rocky");
 console.log(dog.bark("woof"));
 ```
+
+</td>
+<td>
 
 ### Example 7: Anonymous Functions, Range and Maps
 
