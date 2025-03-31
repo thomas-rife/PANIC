@@ -1,1 +1,1 @@
-p "Hello, World!" # Print a message
+p("Hello, World!") # Print a message

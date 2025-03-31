@@ -1,10 +1,13 @@
-f fibonacci(int n):
-  x: 0  # Initialize starting values
-  y: 1
-  l i in [0...n]:  # Loop from 0 to n 
-    p x, end=" "
-    x, y: y, x + y
+f fibonacci(n int){
+  mu x: 0  # Initialize starting values
+  mu y: 1
+  l i in [0...n]{  # Loop from 0 to n 
+    p(x " ")
+    mu z: x
+    x : y
+    y: z + x
+  }
   r # return
-
-num_terms: 10
+}
+im num_terms: 10
 fibonacci(num_terms)

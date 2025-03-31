@@ -1,0 +1,11 @@
+c Dog{
+    con(name string)
+
+    f bark(sound string) -> string {
+        im greet: name + " says " + sound
+        return greet
+    }
+}
+
+im dog: Dog("rocky")
+dog.bark("woof")

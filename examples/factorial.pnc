@@ -1,8 +1,7 @@
-f factorial(int n) -> int {
+f factorial(n int) -> int {
   if n = 0 or n = 1 {
     r 1 
   }
   r n*factorial(n-1)
 }
-
-p factorial(5)
+p(factorial(5))
