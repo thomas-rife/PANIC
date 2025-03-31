@@ -134,7 +134,7 @@ th {
   transition: all 0.2s;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 15px;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .features {
@@ -144,6 +144,7 @@ th {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   border-radius: 30px;
   padding: 40px;
+  overflow: visible;
 }
 
 .cards {
@@ -209,6 +210,7 @@ th {
   margin: 0px auto;
   line-height: 30px;
   transition: transform 0.1s ease-out;
+  overflow: visible;
 }
 
 .ex {
@@ -230,7 +232,7 @@ table {
 
 table th,
 table td {
-  border: 1px solid #333;
+  border: 2px solid #333;
   padding: 10px;
   text-align: left;
 }
@@ -257,12 +259,23 @@ code {
   font-family: "SF Mono", monospace;
 }
 
+.team-block {
+  padding: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  max-width: 900px;
+  border-radius: 30px;
+  margin: 0px auto;
+  line-height: 30px;
+}
+
 .team {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   justify-items: center;
   align-items: start;
+  margin-top: 30px;
 }
 
 .team-member {
@@ -270,9 +283,8 @@ code {
   flex-direction: column;
   align-items: center;
   text-align: left;
-  padding: 40px;
+  padding: 30px;
   background: #faf9f6;
-  transition: all 0.2s;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 18px;
 }
@@ -293,16 +305,6 @@ code {
 .team-member p {
   font-family: "SF Pro Display";
   margin: 0;
-}
-
-.team {
-  padding: 40px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  width: 80%;
-  max-width: 900px;
-  border-radius: 30px;
-  margin: 0px auto;
-  line-height: 30px;
 }
 
 .site-footer {
