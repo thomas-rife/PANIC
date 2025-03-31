@@ -4,8 +4,7 @@
 
 ![alt text](docs/logo.png)
 
-### Check out our website with more info about PANIC
-- https://thomas-rife.github.io/PANIC/
+### [Check out our website with more info about PANIC](https://thomas-rife.github.io/PANIC/) 
 
 ## Introduction
 
