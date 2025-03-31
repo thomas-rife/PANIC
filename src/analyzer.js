@@ -47,7 +47,6 @@ export default function analyze(match) {
   }
 
   function checkAllTheSameType(elems, at) {
-    //make better so doesn't copy
     let elements = [...elems];
     if (elements.length > 1) {
       const first = elements.splice(0, 1)[0];
@@ -148,8 +147,19 @@ export default function analyze(match) {
     check(context.inLoop, message, at);
   }
 
-  function checkValidTypeName() {
-    //not just if its in the thing, also need  to check whether its an array and array basetype is in the types
+  function checkValidTypeName(type, at) {
+    const message = `Not a valid type ${type}`;
+    const trimmedType = type.replace(/\[\]/g, "");
+    const rootContext = getRootContext(context);
+    const valid = rootContext.locals.get("types").includes(trimmedType);
+    check(valid, message, at);
+  }
+
+  function getRootContext(context) {
+    if (context.parent === null) {
+      return context;
+    }
+    return getRootContext(context.parent);
   }
 
   function checkIfInFunction(at) {
@@ -264,15 +274,6 @@ export default function analyze(match) {
       return core.program(statements.children.map((s) => s.rep()));
     },
 
-    //invariant functions
-
-    // c Dog{
-    //     con(x int y: [1 2 3] z: "string")
-    // }
-    // im x: Dog(3 "hello")
-
-    //add len function l
-
     MemberExp(id, _dot, func, _open, exps, _close) {
       const member = context.lookup(id.sourceString);
       checkExists(member, id.sourceString, { at: id });
@@ -375,7 +376,7 @@ export default function analyze(match) {
       fun.params = listParams.children.map((child) => child.rep());
       checkForUniqueNames(fun.params, { at: listParams });
       const returnType = type.children[0]?.sourceString ?? core.voidType;
-      checkValidTypeName();
+      checkValidTypeName(returnType, { at: type });
       fun.type = returnType;
       fun.body = block.rep();
       context = context.parent;
@@ -626,8 +627,6 @@ export default function analyze(match) {
     },
 
     Exp6_indexing(id, index) {
-      console.log("this shouldn't be called");
-
       const array = context.lookup(id.sourceString);
       checkExists(array, id.sourceString, { at: id });
       checkHasArrayType(array, { at: id });
