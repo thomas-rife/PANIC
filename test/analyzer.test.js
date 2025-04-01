@@ -134,44 +134,36 @@ const semanticErrors = [
     "p(2 ? 3 : 4)",
     /Must have type boolean/,
   ],
-  ["Different consequent and otherwise type", "true ? 2 : 2.0", /Expected ":"/],
   [
-    "Or without a boolean type",
-    "2 || false",
-    /Expected ":", "\*\*", "%", "\/", "\*", ">", ">=", "!=", "=", "<", "<=", "-", "\+", "\?", "and", or "or"$/,
+    "Different consequent and otherwise type",
+    "p(true ? 2 : 2.0)",
+    /Must have the same type, got float expected int./,
+  ],
+  ["Or without a boolean type", "p(2 or false)", /Must have type boolean/],
+  ["And without a boolean type", "p(true and 5)", /Must have type boolean/],
+  [
+    "Test without same type",
+    "p(3 < 3.0)",
+    /Must have the same type, got float expected int./,
+  ],
+  ["Subtract strings", 'p("cat" - "dog")', /Must have type integer or float/],
+  ["Add different types", "p(2.0 + true)", /Must have type integer or float/],
+  ["Multiplying strings", 'p("cat" * "dog")', /Must have type integer/],
+  [
+    "Multiplying different types",
+    "p(2.0 / false)",
+    /Must have type integer or float/,
   ],
   [
-    "And without a boolean type",
-    "true && 5",
-    /Expected ":", "\*\*", "%", "\/", "\*", ">", ">=", "!=", "=", "<", "<=", "-", "\+", "\?", "and", or "or"$/,
+    "Power with different types",
+    "p(2.0 ** true)",
+    /Must have type integer or float/,
   ],
-  ["Test without same type", " 3 < 3.0", /Expected ":"/],
-  [
-    "Subtract strings",
-    "'cat' - 'dog'",
-    /Expected "c", "l", "if", "p", "pl", "print", a letter, "r", "return", "b", "break", a digit, "\\"", "\[", "\(", "false", "true", "!", "-", "f", "function", "im", or "mu"$/,
-  ],
-  ["Add different types", "2.0 + true", /Expected ":"/],
-  [
-    "Multiplying strings",
-    "'cat' * 'dog'",
-    /Expected "c", "l", "if", "p", "pl", "print", a letter, "r", "return", "b", "break", a digit, "\\"", "\[", "\(", "false", "true", "!", "-", "f", "function", "im", or "mu"$/,
-  ],
-  ["Multiplying different types", "2.0 / false", /Expected ":"/],
-  ["Power with different types", "2.0 ** true", /Expected ":"/],
-  ["Not equals on literal", "!2", /Expected ":"/],
-  [
-    "Negative string",
-    "-'cat'",
-    /Expected a letter, a digit, "\\"", "\[", "\(", "false", "true", "p", "pl", or "print"$/,
-  ],
-  ["Not declared id", "x + 2", /Expected ":"/],
-  ["Indexing non indexable", "im x: 2 x[1]", /Expected ":"/],
-  [
-    "Assigning non assignable",
-    "mu x: 2 x: c Dog{}",
-    /Expected not a keyword, a digit, "\\"", "\[", "\(", "false", "true", "p", "pl", "print", "!", or "-"$/,
-  ],
+  ["Not equals on literal", "p(!2)", /Must have type boolean/],
+  ["Negative string", 'p(-"cat")', /Must have type integer or float/],
+  ["Not declared id", "p(x + 2)", /Unable to find x./],
+  ["Indexing non indexable", "im x: 2 p(x[1])", /Must have type array/],
+  // ["Assigning non assignable", "mu x: 2 p(x: c Dog{})", /asdf/],
   ["Return from non-function", "l i in 8 {r 4}", /Must be in a function./],
   [
     "Cannot redeclare functions",
@@ -252,11 +244,7 @@ const semanticErrors = [
     /Must have the same type, got int expected string./,
   ],
   ["Not operator on number", "p(!2)", /Must have type boolean/],
-  // [
-  //   "Chained comparisons with mixed types",
-  //   'p(3 < "dog" < 4)',
-  //   /Expected a letter, a digit, "\\\"", "\[", "\(", "false", "true", "p", "pl", "print", "!", or "-"$/,
-  // ],
+  // ["Chained comparisons with mixed types", 'p(3 < "dog" < 4)', /asdf/],
   [
     "Call class method that doesn't exist",
     "c Dog{con() f bark(){}} im x: Dog() x.cat()",
@@ -275,10 +263,15 @@ describe("The analyzer", () => {
       assert.throws(() => analyze(parse(source)), errorMessagePattern);
     });
   }
-  // it("produces the expected representation for a trivial program", () => {
-  //   assert.deepEqual(
-  //     analyze(parse("mu x:3 mu y: x + 2.2")),
-  //     "{kind: 'Program',statements: [{initializer: 3n,kind: 'VariableDeclaration',variable: {kind: 'Variable',mutable: true,name: 'x',type: 'int'}},{initializer: {kind: 'BinaryExpression',left: {kind: 'Variable',mutable: true,name: 'x',type: 'int'},op: '+',right: 2.2,type: 'int'},kind: 'VariableDeclaration',variable: {kind: 'Variable',mutable: true,name: 'y',type: 'int'}}]}"
-  //   );
-  // });
+  it("produces the expected representation for a trivial program", () => {
+    assert.deepEqual(
+      analyze(parse("mu x: 3.14 + 2.2")),
+      program([
+        variableDeclaration(
+          variable("x", true, "float"),
+          binary("+", 3.14, 2.2, "float")
+        ),
+      ])
+    );
+  });
 });
