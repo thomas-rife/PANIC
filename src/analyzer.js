@@ -116,11 +116,11 @@ export default function analyze(match) {
 
   function checkIsMutable(variable, name, at) {
     const message = `${name} is not mutable`;
-    check(variable.mutable || variable.array.mutable, message, at);
+    check(variable?.mutable || variable?.array?.mutable, message, at);
   }
 
   function checkIsVariableOrArrayIndex(variable, name, at) {
-    const message = `cannot assign to non-variable ${name}.`;
+    const message = `Cannot assign to non-variable ${name}.`;
     check(
       variable.kind === "Variable" || variable.kind === "ArrayIndexing",
       message,
@@ -130,7 +130,7 @@ export default function analyze(match) {
 
   function checkIfValidAssign(source, target, at) {
     const sourceType = getType(source);
-    const message = `cannot assign type ${sourceType} to ${target}`;
+    const message = `Cannot assign type ${sourceType} to ${target}`;
     check(sourceType === target, message, at);
   }
 
@@ -170,7 +170,7 @@ export default function analyze(match) {
   function checkIfAbleToReturn(func, returnExp, at) {
     const returnType = getType(func);
     if (returnType === core.voidType) {
-      const message = "Unable to return from a void function.";
+      const message = "Unable to return a value from a void function.";
       check(!returnExp, message, at);
     } else {
       const returnExpType = getType(returnExp);
@@ -240,7 +240,7 @@ export default function analyze(match) {
       let param = params[i];
       let arg = args[i];
       if (param.type !== arg.type) {
-        const message = `Type mismatch: expected ${param.type}, got ${arg.type}`;
+        const message = `Types do not match, expected ${param.type}, got ${arg.type}`;
         check(false, message, at);
       }
     }
@@ -290,7 +290,7 @@ export default function analyze(match) {
       context = context.newChildContext({ class: name });
       const [constructor, functions] = ClassBlock.rep();
       context = context.parent;
-      context.locals.get("types").push(name);
+      getRootContext(context).locals.get("types").push(name);
       const classDec = core.classDeclaration(constructor, functions);
       context.add(`CLASS_${name}`, classDec);
       return classDec;

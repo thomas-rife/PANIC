@@ -2,15 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import parse from "../src/parser.js";
 import analyze from "../src/analyzer.js";
-import { validateHeaderValue } from "node:http";
-import {
-  program,
-  variableDeclaration,
-  variable,
-  binary,
-  floatType,
-  intType,
-} from "../src/core.js";
+import { program, variableDeclaration, variable, binary } from "../src/core.js";
 
 // Programs that are semantically correct
 const semanticChecks = [
@@ -91,9 +83,9 @@ const semanticChecks = [
 // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
   [
-    "Cannot redeclare functions",
-    "f func(){r 2} f func(){r 1}",
-    /Unable to return from a void function./,
+    "Cannot return a value from void function",
+    "f func(){r 2}",
+    /Unable to return a value from a void function./,
   ],
   ["Break inside a function a function", "f func(){b}", /Must be in a loop./],
   [
@@ -119,16 +111,10 @@ const semanticErrors = [
   [
     "Wrong param type",
     "f func(x float){} func(2)",
-    /Type mismatch: expected float, got int/,
+    /Types do not match, expected float, got int/,
   ],
-  //to do classes"
   ["Redeclaring variables", "mu x: 3 mu x: 4", /Already declared x./],
-  [
-    "Assigning to immutable variable",
-    "im x: 4 x: 6",
-    /Cannot read properties of undefined \(reading 'mutable'\)/,
-  ],
-  //to do loops
+  ["Assigning to immutable variable", "im x: 4 x: 6", /x is not mutable/],
   [
     "Conditional with not boolean type",
     "p(2 ? 3 : 4)",
@@ -163,17 +149,11 @@ const semanticErrors = [
   ["Negative string", 'p(-"cat")', /Must have type integer or float/],
   ["Not declared id", "p(x + 2)", /Unable to find x./],
   ["Indexing non indexable", "im x: 2 p(x[1])", /Must have type array/],
-  // ["Assigning non assignable", "mu x: 2 p(x: c Dog{})", /asdf/],
   ["Return from non-function", "l i in 8 {r 4}", /Must be in a function./],
   [
     "Cannot redeclare functions",
-    "f func(){r 2} f func(){r 1}",
-    /Unable to return from a void function./,
-  ],
-  [
-    "Returning from void function",
-    "f func() {r 5}",
-    /Unable to return from a void function./,
+    "f func(){} f func(){}",
+    /Already declared func./,
   ],
   [
     "Returning wrong type",
@@ -182,8 +162,8 @@ const semanticErrors = [
   ],
   [
     "Function call with too many arguments",
-    "f func(x int){} func(2, 3)",
-    /Expected "\)"$/,
+    "f func(x int){} func(2 3)",
+    /Expected 1 arguments, but 2 parameters were passed/,
   ],
   [
     "Function parameter out of scope",
@@ -194,21 +174,20 @@ const semanticErrors = [
   [
     "Assigning incompatible type",
     "mu x: 5 x: true",
-    /cannot assign type boolean to int/,
+    /Cannot assign type boolean to int/,
   ],
   ["Undefined variable in expression", "mu y: x + 3", /Unable to find x./],
   ["Break outside loop", "b", /Must be in a loop./],
-  ["Continue outside loop", "c", /Expected a letter/],
   [
     "Modifying immutable inside loop",
     "im x: 2 l i in [1...5] {x: i}",
-    /Cannot read properties of undefined \(reading 'mutable'\)/,
+    /x is not mutable/,
   ],
-  ["Instantiating undefined class", "im d: Cat{}", /Expected end of input/],
+  ["Instantiating undefined class", "im d: Cat()", /Unable to find Cat/],
   [
     "Calling non-existent method",
-    "c Dog {} im d: Dog{} d.run()",
-    /Expected "con"$/,
+    "c Dog {con()} im d: Dog() d.run()",
+    /Type Dog does not have method run/,
   ],
   [
     "Constructor wrong args",
@@ -221,14 +200,14 @@ const semanticErrors = [
     /Unable to return Dog from function marked to return int./,
   ],
   [
-    "Trying to index a immutable array",
+    "Trying assign to an index of an immutable array",
     "im x: [1 2 3] x[1]: true",
     /x\[1\] is not mutable$/,
   ],
   [
     "Assigning wrong type to array",
     "mu x: [1 2 3] x[1]: true",
-    /cannot assign type boolean to int/,
+    /Cannot assign type boolean to int/,
   ],
   [
     "Using object as array",
@@ -244,12 +223,23 @@ const semanticErrors = [
     /Must have the same type, got int expected string./,
   ],
   ["Not operator on number", "p(!2)", /Must have type boolean/],
-  // ["Chained comparisons with mixed types", 'p(3 < "dog" < 4)', /asdf/],
+  [
+    "Comparing to int and a string",
+    'p("cat" < 2)',
+    /Must have the same type, got int expected string./,
+  ],
   [
     "Call class method that doesn't exist",
     "c Dog{con() f bark(){}} im x: Dog() x.cat()",
     /Type Dog does not have method cat/,
   ],
+  ["Made up type", "f func(x madeUpType){}", /Not a valid type madeUpType/],
+  [
+    "Assigning to non-assignable",
+    "f func(){} func: 4",
+    /Cannot assign to non-variable func./,
+  ],
+  ["Trying to call non function", "im x: 3 x()", /Cannot call non-function x/],
 ];
 
 describe("The analyzer", () => {
