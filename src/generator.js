@@ -169,14 +169,14 @@ export default function generate(program) {
       x.args.forEach((arg) => {
         args[targetName(arg.name)] = arg.defaultValue;
       });
-      output.push(
-        `constructor (${Object.keys(args)
-          .filter((key) => args[key] == null)
-          .join(", ")}) {`
-      );
+      const params = Object.keys(args)
+        .filter((key) => args[key] == null)
+        .join(", ");
+      output.push(`constructor(${params}) {`);
+      
       Object.keys(args).forEach((param) => {
         output.push(
-          `this.${param} = ${args[param] ? gen(args[param]) : param}`
+          `this.${param} = ${args[param] ? gen(args[param]) : param};`
         );
       });
       output.push(`}`);

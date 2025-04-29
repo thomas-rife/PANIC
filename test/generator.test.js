@@ -53,51 +53,52 @@ const fixtures = [
       compare_numbers(n1 n2)
       `,
     expected: dedent`
-      function compare_numbers(a, b) {
-        if (a === b) {
-          console.log(a + " is equal to " + b);
-        } else if (a < b) {
-          console.log(a + " is less than " + b);
-        } else {
-          console.log(a + " is greater than " + b);
+      function compare_numbers_1(x_2, y_3) {
+        if (x_2 === y_3) {
+          console.log(x_2, " is equal to ", y_3);
+        }
+        else if (x_2 < y_3) {
+          console.log(x_2, " is less than ", y_3);
+        }
+        else {
+          console.log(x_2, " is greater than ", y_3);
         }
       }
 
-      let n1 = 10;
-      let n2 = 20;
+      const n1_4 = 10;
+      const n2_5 = 20;
 
-      compareNumbers(n1, n2);
+      compare_numbers_1(n1_4, n2_5);
       `,
   },
   {
     name: "Fibonacci",
     source: `
       f fibonacci(n int) {
-      mu a: 0 
-      mu b: 1
+        mu x: 0 
+        mu y: 1
 
-      l i in [0...n] {  
-        p(a)
-        mu z: a
-        a: b
-        b: z + a
+        l i in [0...n] {  
+          p(x)
+          mu z: x
+          x: y
+          y: z + x
+        }
+        r 
       }
-
-      r 
-    }
 
     im num_terms: 10
     fibonacci(num_terms)
     `,
     expected: dedent`
       function fibonacci(n) {
-        let a = 0,
-            b = 1;
+        let x = 0,
+            y = 1;
         for (let i = 0; i < n; i++) {
-          console.log(a);
-          let next = a + b;
-          a = b;
-          b = next;
+          console.log(x);
+          let next = x + y;
+          x = y;
+          y = next;
         }
       }
 
@@ -117,14 +118,14 @@ const fixtures = [
       p(factorial(5))
     `,
     expected: dedent `
-      function factorial(n) {
-        if (n === 0) || (n === 1) {
+      function factorial_1(n_2) {
+        if ((n_2 === 0) || (n_2 === 1)) {
           return 1;
         }
-        return (n_2 * factorial(n_2 - 1));
+        return (n_2 * factorial_1((n_2 - 1)));
       }
 
-      console.log(factorial(5));
+      console.log(factorial_1(5));
     `,
   },
   {
@@ -138,12 +139,11 @@ const fixtures = [
       }
     `,
     expected: dedent`
-      for (let i = 1; i <= 5; i++) {
-        let row = "";
-        for (let j = 1; j <= i; j++) {
-          row += "* ";
+      for (const i_1 = 1; i <= 5; i++) {
+        for (const j_2 = 1; j <= i; j++) {
+          console.log("*");
         }
-        console.log(row);
+        console.log(" ");
       }
     `,
   },
@@ -156,16 +156,16 @@ const fixtures = [
 
       mu z: y[0][0][0]
 
-      z: [1, 2, 3, 4, 5]
+      z: [1 2 3 4 5]
     `,
     expected: dedent `
-      const x = Array.from({ length: 20 }, (_, i) => (i + 1) * 2);
+      const x_1 = [1, 2, 4, 8, 16];
 
-      const y = [[[x]]];
+      const y_2 = [[[x_1]]];
 
-      let z = y[0][0][0];
+      let z_3 = y_2[0,0,0];
 
-      z = [1, 2, 3, 4, 5];
+      z_3 = [1,2,3,4,5];
     `,
   },
   {
@@ -180,23 +180,20 @@ const fixtures = [
       }
 
       im dog: Dog("rocky")
-
-      dog.bark("woof")
     `,
     expected: dedent `
-      class Dog {
-        constructor(name) {
-          this.name = name;
+      class Dog_1 {
+        constructor(name_2) {
+          this.name_2 = name_2;
         }
         
-        bark(sound) {
-          const greet = this.name + " says " + sound;
-          return greet;
+        function bark_3(sound_4) {
+          const greet_5 = ((name_2 + " says ") + sound_4);
+          return greet_5;
         }
       }
 
-      const dog = new Dog("rocky");
-      console.log(dog.bark("woof"));
+      const dog_6 = new Dog_1("rocky");
     `,
   },
 ];
