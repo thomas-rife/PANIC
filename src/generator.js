@@ -30,8 +30,7 @@ export default function generate(program) {
       return `[]`;
     },
     VariableDeclaration(x) {
-      const decl = x.variable.mutable ? "let" : "const";
-      output.push(`${decl} ${gen(x.variable)} = ${gen(x.initializer)};`);
+      output.push(`let ${gen(x.variable)} = ${gen(x.initializer)};`);
     },
     Variable(x) {
       return targetName(x.name);
@@ -71,9 +70,7 @@ export default function generate(program) {
         if ((op === "+" || op === "*" || op === "**") && next > end) break;
         if ((op === "-" || op === "/" || op === "%") && next < end) break;
         elements.push(next);
-        if (next === end) {
-          break;
-        }
+        if (next === end) break;
         current = next;
       }
 
@@ -84,8 +81,8 @@ export default function generate(program) {
       return `(${gen(x.left)} ${op} ${gen(x.right)})`;
     },
     UnaryExpression(x) {
-      const operand = gen(e.operand);
-      return `${e.op}(${operand})`;
+      const operand = gen(x.operand);
+      return `${x.op}(${operand})`;
     },
     IfStatement(x) {
       output.push(`if ${gen(x.test)} {`);
@@ -114,9 +111,23 @@ export default function generate(program) {
       output.push(`}`);
     },
     ForStatement(x) {
-      output.push(
-        `for (const ${targetName(x.iterator.name)} of ${gen(x.collection)}){`
-      );
+      if (x.collection.kind === "Range") {
+        const start = gen(x.collection.start);
+        const end = gen(x.collection.end);
+        const op = x.collection.op;
+        const value = gen(x.collection.value);
+        const test = ["-", "%", "/"].includes(op) ? `>=` : `<=`;
+        const i = targetName(x.iterator.name);
+        output.push(
+          `for (let ${i} = ${start}; ${i} ${test} ${end}; ${i} ${op}= ${value}) {`
+        );
+      } else {
+        const i = targetName(x.iterator.name);
+        output.push(
+          `for (let ${i} = 1; ${i} <= ${gen(x.collection)}; ${i}++) {`
+        );
+      }
+
       x.body.forEach(gen);
       output.push("}");
     },
@@ -140,7 +151,8 @@ export default function generate(program) {
       return `${targetName(x.name)}`;
     },
     ReturnStatement(x) {
-      output.push(`return ${gen(x.expression)};`);
+      const exp = gen(x.expression);
+      output.push(`return${exp === undefined ? "" : ` ${exp}`};`);
     },
     FunctionCall(x) {
       if (x.callee.name === "print") {
@@ -173,7 +185,7 @@ export default function generate(program) {
         .filter((key) => args[key] == null)
         .join(", ");
       output.push(`constructor(${params}) {`);
-      
+
       Object.keys(args).forEach((param) => {
         output.push(
           `this.${param} = ${args[param] ? gen(args[param]) : param};`

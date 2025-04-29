@@ -18,7 +18,7 @@ const fixtures = [
       y: x
     `,
     expected: dedent`
-      const x_1 = 3;
+      let x_1 = 3;
       let y_2 = 4;
       y_2 = x_1;
     `,
@@ -65,8 +65,8 @@ const fixtures = [
         }
       }
 
-      const n1_4 = 10;
-      const n2_5 = 20;
+      let n1_4 = 10;
+      let n2_5 = 20;
 
       compare_numbers_1(n1_4, n2_5);
       `,
@@ -74,37 +74,37 @@ const fixtures = [
   {
     name: "Fibonacci",
     source: `
-      f fibonacci(n int) {
-        mu x: 0 
-        mu y: 1
+        f fibonacci(n int) {
+          mu x: 0
+          mu y: 1
 
-        l i in [0...n] {  
-          p(x)
-          mu z: x
-          x: y
-          y: z + x
+          l i in [0...n] {
+            p(x)
+            mu z: x
+            x: y
+            y: z + x
+          }
+          r
         }
-        r 
-      }
 
-    im num_terms: 10
-    fibonacci(num_terms)
-    `,
+      im num_terms: 10
+      fibonacci(num_terms)
+      `,
     expected: dedent`
-      function fibonacci(n) {
-        let x = 0,
-            y = 1;
-        for (let i = 0; i < n; i++) {
-          console.log(x);
-          let next = x + y;
-          x = y;
-          y = next;
+        function fibonacci_1(n_2) {
+          let x_3 = 0;
+          let y_4 = 1;
+          for (let i_5 = 0; i_5 <= n_2; i_5 += 1) {
+            console.log(x_3);
+            let z_6 = x_3;
+            x_3 = y_4;
+            y_4 = (z_6 + x_3);
+          }
+          return;
         }
-      }
-
-      let numTerms = 10;
-      fibonacci(numTerms);
-    `,
+        let num_terms_7 = 10;
+        fibonacci_1(num_terms_7);
+      `,
   },
   {
     name: "Factorials with Tail Recursion",
@@ -117,7 +117,7 @@ const fixtures = [
       }
       p(factorial(5))
     `,
-    expected: dedent `
+    expected: dedent`
       function factorial_1(n_2) {
         if ((n_2 === 0) || (n_2 === 1)) {
           return 1;
@@ -139,32 +139,26 @@ const fixtures = [
       }
     `,
     expected: dedent`
-      for (const i_1 = 1; i <= 5; i++) {
-        for (const j_2 = 1; j <= i; j++) {
-          console.log("*");
-        }
-        console.log(" ");
+    for (let i_1 = 1; i_1 <= 5; i_1 += 1) {
+      for (let j_2 = 1; j_2 <= i_1; j_2++) {
+        console.log("*");
       }
+      console.log(" ");
+    }
     `,
   },
   {
     name: "Arrays",
     source: `
       im x: [1...20, *2]
-
       im y: [[[x]]]
-
       mu z: y[0][0][0]
-
       z: [1 2 3 4 5]
     `,
-    expected: dedent `
-      const x_1 = [1, 2, 4, 8, 16];
-
-      const y_2 = [[[x_1]]];
-
+    expected: dedent`
+      let x_1 = [1, 2, 4, 8, 16];
+      let y_2 = [[[x_1]]];
       let z_3 = y_2[0,0,0];
-
       z_3 = [1,2,3,4,5];
     `,
   },
@@ -180,20 +174,85 @@ const fixtures = [
       }
 
       im dog: Dog("rocky")
+      dog.bark("woof")
     `,
-    expected: dedent `
-      class Dog_1 {
-        constructor(name_2) {
-          this.name_2 = name_2;
+    expected: dedent`
+    class Dog_1 {
+      constructor(name_2) {
+        this.name_2 = name_2;
+      }
+      function bark_3(sound_4) {
+        let greet_5 = ((name_2 + " says ") + sound_4);
+        return greet_5;
+      }
+    }
+    let dog_6 = new Dog_1("rocky");
+    dog_6.bark_3("woof")
+    `,
+  },
+  {
+    name: "While",
+    source: `
+    mu x: 3
+    l x < 100 {
+      if x = 35{
+        break
+      } 
+      p(x)
+    }
+      `,
+    expected: dedent`
+      let x_1 = 3;
+      while (x_1 < 100) {
+        if (x_1 === 35) {
+          break;
         }
-        
-        function bark_3(sound_4) {
-          const greet_5 = ((name_2 + " says ") + sound_4);
-          return greet_5;
-        }
+        console.log(x_1);
+      }
+      `,
+  },
+  {
+    name: "Cool features",
+    source: `
+      f cool(x: 10) -> int {
+        r -x
       }
 
-      const dog_6 = new Dog_1("rocky");
+      l i in [10...1, -1]{
+        p(i)
+      }
+
+      im n: 4
+      c weird{
+        con(x: n)
+      }
+
+      im x: [2...10000000000, **2]
+      im z: [100000...10, /10]
+      im m: [4...2, %2]
+      im y: [4.0...4.4, +0.2]
+      im a: [4.4...4.0, -0.2]
+      im a_1: []
+      `,
+    expected: dedent`
+    function cool_1(x_2 = 10) {
+    return -(x_2 = 10);
+    }
+    for (let i_3 = 10; i_3 >= 1; i_3 -= 1) {
+    console.log(i_3);
+    }
+    let n_4 = 4;
+    class weird_5 {
+    constructor() {
+    this.x_2 = n_4;
+    }
+    }
+    let x_2 = [2, 4, 16, 256, 65536, 4294967296];
+    let z_6 = [100000, 10000, 1000, 100, 10];
+    let m_7 = [4];
+    let y_8 = [4, 4.2, 4.4];
+    let a_9 = [4.4, 4.2, 4];
+    let a_1_10 = [];
     `,
   },
 ];
