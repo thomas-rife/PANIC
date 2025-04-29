@@ -143,7 +143,7 @@
           <tr>
             <td>
               <pre><code class="language-panics"># Print a message
-p "Hello, World!" </code></pre>
+p("Hello, World!") </code></pre>
             </td>
             <td>
               <pre><code class="language-javascript">console.log("Hello, World!");</code></pre>
@@ -170,13 +170,13 @@ p "Hello, World!" </code></pre>
               <pre><code class="language-panics"># Function Definition 
 f compare_numbers(x int y int) {  
   if x = y {
-    pl (x "is equal to" y)
+    p(x " is equal to " y)
   }
   elif x < y {
-    pl (x "is less than" y)
+    p(x " is less than " y)
   }
   else {
-    pl (x "is greater than" y)
+    p(x " is greater than " y)
   }
 }
 

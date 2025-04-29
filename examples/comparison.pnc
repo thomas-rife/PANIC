@@ -1,12 +1,12 @@
 f compare_numbers(x int y int){  # Function Definition
   if x = y {
-    pl (x "is equal to" y)
+    p(x "is equal to" y)
   }
   elif x < y {
-    pl (x "is less than" y)
+    p(x "is less than" y)
   }
   else {
-    pl (x "is greater than" y)
+    p(x "is greater than" y)
   }
 }
 

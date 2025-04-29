@@ -30,7 +30,8 @@ export default function generate(program) {
       return `[]`;
     },
     VariableDeclaration(x) {
-      output.push(`let ${gen(x.variable)} = ${gen(x.initializer)};`);
+      const decl = x.variable.mutable ? "let" : "const";
+      output.push(`${decl} ${gen(x.variable)} = ${gen(x.initializer)};`);
     },
     Variable(x) {
       return targetName(x.name);
@@ -142,6 +143,10 @@ export default function generate(program) {
       output.push(`return ${gen(x.expression)};`);
     },
     FunctionCall(x) {
+      if (x.callee.name === "print") {
+        output.push(`console.log(${x.args.map(gen).join(", ")});`);
+        return;
+      }
       const isClass = classes.includes(x.callee.name);
       const code = `${gen(x.callee)}(${x.args.map(gen).join(", ")})`;
       const string = isClass ? `new ${code}` : code;

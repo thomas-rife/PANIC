@@ -18,7 +18,7 @@ const fixtures = [
       y: x
     `,
     expected: dedent`
-      let x_1 = 3;
+      const x_1 = 3;
       let y_2 = 4;
       y_2 = x_1;
     `,
@@ -26,29 +26,34 @@ const fixtures = [
   {
     name: "hello world",
     source: `
-    p "Hello, World!"
+    p("Hello, World!")
     `,
     expected: dedent`
-    console.log("Hello, World");
+    console.log("Hello, World!");
     `,
   },
   {
     name: "Comparison Function",
     source: `
-      f compare_numers(x int y int) {
+      f compare_numbers(x int y int) {
         if x = y {
-          pl (x "is equal to" y)
+          p(x " is equal to " y)
         }
         elif x < y {
-          pl (x "is less than" y)
+          p(x " is less than " y)
         }
         else {
-          pl (x "is greater than" y)
+          p(x " is greater than " y)
         }
       }
+
+      im n1: 10
+      im n2: 20
+
+      compare_numbers(n1 n2)
       `,
     expected: dedent`
-      function compareNumbers(a, b) {
+      function compare_numbers(a, b) {
         if (a === b) {
           console.log(a + " is equal to " + b);
         } else if (a < b) {
@@ -68,19 +73,16 @@ const fixtures = [
     name: "Fibonacci",
     source: `
       f fibonacci(n int) {
-      # Initialize starting values
-      mu x: 0 
-      mu y: 1
+      mu a: 0 
+      mu b: 1
 
-      # Loop from 0 to n 
       l i in [0...n] {  
-        p(x " ")
-        mu z: x
-        x : y
-        y: z + x
+        p(a)
+        mu z: a
+        a: b
+        b: z + a
       }
 
-      # Use "r" for return
       r 
     }
 
@@ -116,10 +118,10 @@ const fixtures = [
     `,
     expected: dedent `
       function factorial(n) {
-        if (n === 0 || n === 1) {
+        if (n === 0) || (n === 1) {
           return 1;
         }
-        return n * factorial(n - 1);
+        return (n_2 * factorial(n_2 - 1));
       }
 
       console.log(factorial(5));
@@ -148,17 +150,13 @@ const fixtures = [
   {
     name: "Arrays",
     source: `
-      # Create immutable array ranging from 1 to 20, each multiplied by 2
       im x: [1...20, *2]
 
-      # Create a nested array structure
       im y: [[[x]]]
 
-      # Access the first element of the nested array
       mu z: y[0][0][0]
 
-      # Modify the value of z to a new array
-      z: [1 2 3 4 5]
+      z: [1, 2, 3, 4, 5]
     `,
     expected: dedent `
       const x = Array.from({ length: 20 }, (_, i) => (i + 1) * 2);
@@ -173,9 +171,7 @@ const fixtures = [
   {
     name: "Classes",
     source: `
-      # Define a class Dog
       c Dog {
-        # Define constructor
         con(name string)
           f bark(sound string) -> string {
               im greet: name + " says " + sound
@@ -183,7 +179,6 @@ const fixtures = [
           }
       }
 
-      # Create a new Dog
       im dog: Dog("rocky")
 
       dog.bark("woof")
