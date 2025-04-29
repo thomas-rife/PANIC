@@ -96,8 +96,8 @@ export function func(name, params, body, type) {
   };
 }
 
-export function param(id, defaultValue, type) {
-  return { kind: "Parameter", id, defaultValue, type };
+export function param(name, defaultValue, type) {
+  return { kind: "Parameter", name, defaultValue, type };
 }
 
 export function returnStatement(expression) {
@@ -108,14 +108,14 @@ export function functionCall(callee, args, type) {
   return { kind: "FunctionCall", callee, args, type };
 }
 
-export function classDeclaration(constructor, methods) {
-  return { kind: "ClassDeclaration", constructor, methods };
+export function classDeclaration(constructor, methods, name) {
+  return { kind: "ClassDeclaration", constructor, methods, name };
 }
 
 export function constructorCall(args) {
   return { kind: "ConstructorCall", args };
 }
 
-export function methodCall(methodName, object, args, type) {
-  return { kind: "MethodCall", methodName, object, args, type };
+export function methodCall(name, object, args, type) {
+  return { kind: "MethodCall", name, object, args, type };
 }

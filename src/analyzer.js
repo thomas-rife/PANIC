@@ -264,7 +264,7 @@ export default function analyze(match) {
     const before = params.length;
     const uniqueNames = new Set();
     for (let param of params) {
-      uniqueNames.add(param.id);
+      uniqueNames.add(param.name);
     }
     check(before === uniqueNames.size, "Param names must be unique.", at);
   }
@@ -291,7 +291,7 @@ export default function analyze(match) {
       const [constructor, functions] = ClassBlock.rep();
       context = context.parent;
       getRootContext(context).locals.get("types").push(name);
-      const classDec = core.classDeclaration(constructor, functions);
+      const classDec = core.classDeclaration(constructor, functions, name);
       context.add(`CLASS_${name}`, classDec);
       return classDec;
     },

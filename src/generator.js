@@ -3,12 +3,14 @@ import { voidType } from "./core.js";
 export default function generate(program) {
   const output = [];
 
+  const classes = [];
+
   const targetName = ((mapping) => {
-    return (entity) => {
-      if (!mapping.has(entity)) {
-        mapping.set(entity, mapping.size + 1);
+    return (name) => {
+      if (!mapping.has(name)) {
+        mapping.set(name, mapping.size + 1);
       }
-      return `${entity.name}_${mapping.get(entity)}`;
+      return `${name}_${mapping.get(name)}`;
     };
   })(new Map());
 
@@ -31,12 +33,51 @@ export default function generate(program) {
       output.push(`let ${gen(x.variable)} = ${gen(x.initializer)};`);
     },
     Variable(x) {
-      return targetName(x);
+      return targetName(x.name);
     },
     Assignment(x) {
       output.push(`${gen(x.target)} = ${gen(x.source)};`);
     },
-    Range(x) {},
+    Range(x) {
+      let elements = [];
+      let current = gen(x.start);
+      const end = gen(x.end);
+      const value = gen(x.value);
+      const op = gen(x.op);
+      elements.push(current);
+      while (true) {
+        let next;
+        switch (op) {
+          case "-":
+            next = current - value;
+            break;
+          case "+":
+            next = current + value;
+            break;
+          case "*":
+            next = current * value;
+            break;
+          case "/":
+            next = current / value;
+            break;
+          case "**":
+            next = current ** value;
+            break;
+          case "%":
+            next = current % value;
+            break;
+        }
+        if ((op === "+" || op === "*" || op === "**") && next > end) break;
+        if ((op === "-" || op === "/" || op === "%") && next < end) break;
+        elements.push(next);
+        if (next === end) {
+          break;
+        }
+        current = next;
+      }
+
+      return `[${elements.join(", ")}]`;
+    },
     BinaryExpression(x) {
       const op = { "=": "===", "!=": "!==" }[x.op] ?? x.op;
       return `(${gen(x.left)} ${op} ${gen(x.right)})`;
@@ -71,7 +112,13 @@ export default function generate(program) {
       x.body.forEach(gen);
       output.push(`}`);
     },
-    ForStatement(x) {},
+    ForStatement(x) {
+      output.push(
+        `for (const ${targetName(x.iterator.name)} of ${gen(x.collection)}){`
+      );
+      x.body.forEach(gen);
+      output.push("}");
+    },
     BreakStatement(x) {
       output.push("break;");
     },
@@ -83,37 +130,39 @@ export default function generate(program) {
       output.push("}");
     },
     Function(x) {
-      return targetName(x);
+      return targetName(x.name);
     },
     Parameter(x) {
-      // the issue is with id, but should be name and should use targetName
       if (x.defaultValue) {
-        return `${x.id} = ${gen(x.defaultValue)}`;
+        return `${targetName(x.name)} = ${gen(x.defaultValue)}`;
       }
-      return `${x.id}`;
+      return `${targetName(x.name)}`;
     },
     ReturnStatement(x) {
       output.push(`return ${gen(x.expression)};`);
     },
     FunctionCall(x) {
-      const targetCode = `${gen(x.callee)}(${x.args.map(gen).join(", ")})`;
-      // I'm not sure that this is correct tbh
-      //if callee is a class then need to add new
+      const isClass = classes.includes(x.callee.name);
+      const code = `${gen(x.callee)}(${x.args.map(gen).join(", ")})`;
+      const string = isClass ? `new ${code}` : code;
+
       if (x.callee.type !== voidType) {
-        return targetCode;
+        return string;
       }
-      output.push(`${targetCode};`);
+
+      output.push(`${string};`);
     },
     ClassDeclaration(x) {
-      //need to have name here
-      output.push(`class `);
+      classes.push(x.name);
+      output.push(`class ${targetName(x.name)} {`);
       gen(x.constructor[0]);
+      x.methods.forEach(gen);
+      output.push(`}`);
     },
     ConstructorCall(x) {
-      console.log("here", x.args);
       let args = {};
       x.args.forEach((arg) => {
-        args[arg.id] = arg.defaultValue;
+        args[targetName(arg.name)] = arg.defaultValue;
       });
       output.push(
         `constructor (${Object.keys(args)
@@ -127,7 +176,12 @@ export default function generate(program) {
       });
       output.push(`}`);
     },
-    MethodCall(x) {},
+    MethodCall(x) {
+      const args = x.args.map(gen).join(",");
+      const obj = gen(x.object);
+      const methodName = targetName(x.name);
+      output.push(`${obj}.${methodName}(${args})`);
+    },
   };
 
   gen(program);
