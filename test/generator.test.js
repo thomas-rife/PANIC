@@ -18,7 +18,7 @@ const fixtures = [
       y: x
     `,
     expected: dedent`
-      const x_1 = 3;
+      let x_1 = 3;
       let y_2 = 4;
       y_2 = x_1;
     `,
@@ -40,9 +40,9 @@ const fixtures = [
       im z: x and y or x
     `,
     expected: dedent`
-        const x_1 = true;
-        const y_2 = false;
-        const z_3 = ((x_1 && y_2) || x_1);
+        let x_1 = true;
+        let y_2 = false;
+        let z_3 = ((x_1 && y_2) || x_1);
     `,
   },
   {
@@ -78,8 +78,8 @@ const fixtures = [
         }
       }
 
-      const n1_4 = 10;
-      const n2_5 = 20;
+      let n1_4 = 10;
+      let n2_5 = 20;
 
       compare_numbers_1(n1_4, n2_5);
       `,
@@ -115,7 +115,7 @@ const fixtures = [
           }
           return;
         }
-        const num_terms_7 = 10;
+        let num_terms_7 = 10;
         fibonacci_1(num_terms_7);
       `,
   },
@@ -169,8 +169,8 @@ const fixtures = [
       z: [1 2 3 4 5]
     `,
     expected: dedent`
-      const x_1 = [1, 2, 4, 8, 16];
-      const y_2 = [[[x_1]]];
+      let x_1 = [1, 2, 4, 8, 16];
+      let y_2 = [[[x_1]]];
       let z_3 = y_2[0,0,0];
       z_3 = [1,2,3,4,5];
     `,
@@ -195,11 +195,11 @@ const fixtures = [
         this.name_2 = name_2;
       }
       function bark_3(sound_4) {
-        const greet_5 = ((name_2 + " says ") + sound_4);
+        let greet_5 = ((name_2 + " says ") + sound_4);
         return greet_5;
       }
     }
-    const dog_6 = new Dog_1("rocky");
+    let dog_6 = new Dog_1("rocky");
     dog_6.bark_3("woof")
     `,
   },
@@ -254,18 +254,18 @@ const fixtures = [
     for (let i_3 = 10; i_3 >= 1; i_3 -= 1) {
     console.log(i_3);
     }
-    const n_4 = 4;
+    let n_4 = 4;
     class weird_5 {
     constructor() {
     this.x_2 = n_4;
     }
     }
-    const x_2 = [2, 4, 16, 256, 65536, 4294967296];
-    const z_6 = [100000, 10000, 1000, 100, 10];
-    const m_7 = [4];
-    const y_8 = [4, 4.2, 4.4];
-    const a_9 = [4.4, 4.2, 4];
-    const a_1_10 = [];
+    let x_2 = [2, 4, 16, 256, 65536, 4294967296];
+    let z_6 = [100000, 10000, 1000, 100, 10];
+    let m_7 = [4];
+    let y_8 = [4, 4.2, 4.4];
+    let a_9 = [4.4, 4.2, 4];
+    let a_1_10 = [];
     `,
   },
 ];

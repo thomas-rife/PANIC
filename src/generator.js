@@ -30,8 +30,7 @@ export default function generate(program) {
       return `[]`;
     },
     VariableDeclaration(x) {
-      const decl = x.variable.mutable ? "let" : "const";
-      output.push(`${decl} ${gen(x.variable)} = ${gen(x.initializer)};`);
+      output.push(`let ${gen(x.variable)} = ${gen(x.initializer)};`);
     },
     Variable(x) {
       return targetName(x.name);
