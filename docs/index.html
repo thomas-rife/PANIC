@@ -327,11 +327,10 @@ console.log(factorial(5));</code></pre>
             </td>
             <td>
               <pre><code class="language-javascript">for (let i = 1; i <= 5; i++) {
-  let row = "";
   for (let j = 1; j <= i; j++) {
-    row += "* ";
+    console.log("*");
   }
-  console.log(row);
+  console.log(" ");
 }</code></pre>
             </td>
           </tr>
@@ -420,12 +419,12 @@ dog.bark("woof")</code></pre>
   }
   
   bark(sound) {
-    const greet = this.name + " says " + sound;
+    const greet = ((this.name + " says ") + sound);
     return greet;
   }
 }
 
-const dog = new Dog("rocky");
+let dog = new Dog("rocky");
 console.log(dog.bark("woof"));</code></pre>
             </td>
           </tr>
@@ -510,6 +509,425 @@ console.log(x);</code></pre>
       </div> -->
     </div>
     <div class="divider"></div>
+    <div class="team-block">
+      <h1>Code Generation Examples</h1>
+  <div class="ex">
+    <h2>Hello World</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+p("Hello, World!")
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+console.log("Hello, World!");
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>Here is a simple "Hello World" example showing PANIC's code versus JavaScript. PANIC's p statement cooresponds to JS's console.log()</p>
+  </div>  
+
+  <div class="ex">
+    <h2>Simple Variables</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+im x: 3
+mu y: 4
+y: x
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+let x_1 = 3;
+let y_2 = 4;
+y_2 = x_1;
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>Here we have simple variable declarations in PANIC, compared to their generated output in JavaScript</p>
+  </div>
+
+  <div class="ex">
+    <h2>Boolean logic</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+im x: true
+im y: false
+im z: x and y or x
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+let x_1 = true;
+let y_2 = false;
+let z_3 = ((x_1 && y_2) || x_1);
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>Here we have some simple Boolean Logic operations in both PANIC and JavaScript, PANIC is much more concise here.</p>
+  </div>
+
+  <!-- Generated Example: Comparison Function -->
+  <div class="ex">
+    <h2>Comparison Function</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+f compare_numbers(x int y int) {
+  if x = y {
+    p(x " is equal to " y)
+  }
+  elif x < y {
+    p(x " is less than " y)
+  }
+  else {
+    p(x " is greater than " y)
+  }
+}
+
+im n1: 10
+im n2: 20
+
+compare_numbers(n1 n2)
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+function compare_numbers_1(x_2, y_3) {
+  if (x_2 === y_3) {
+    console.log(x_2, " is equal to ", y_3);
+  }
+  else if (x_2 < y_3) {
+    console.log(x_2, " is less than ", y_3);
+  }
+  else {
+    console.log(x_2, " is greater than ", y_3);
+  }
+}
+
+let n1_4 = 10;
+let n2_5 = 20;
+
+compare_numbers_1(n1_4, n2_5);
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>PANIC does not include the use of parentheses in if statements, making it simpler to write versus the generated JavaScript output.</p>
+  </div>
+
+  <!-- Generated Example: Fibonacci -->
+  <div class="ex">
+    <h2>Fibonacci</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+f fibonacci(n int) {
+  mu x: 0
+  mu y: 1
+
+  l i in [0...n] {
+    p(x)
+    mu z: x
+    x: y
+    y: z + x
+  }
+  r
+}
+
+im num_terms: 10
+fibonacci(num_terms)
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+function fibonacci_1(n_2) {
+  let x_3 = 0;
+  let y_4 = 1;
+  for (let i_5 = 0; i_5 <= n_2; i_5 += 1) {
+    console.log(x_3);
+    let z_6 = x_3;
+    x_3 = y_4;
+    y_4 = (z_6 + x_3);
+  }
+  return;
+}
+let num_terms_7 = 10;
+fibonacci_1(num_terms_7);
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>Loops are also more condensed, with ranges being much simpler to write and to understand.</p>
+  </div>
+
+  <!-- Generated Example: Factorials with Tail Recursion -->
+  <div class="ex">
+    <h2>Factorials with Tail Recursion</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+f factorial(n int) -> int {
+  if n = 0 or n = 1 {
+    r 1
+  }
+  r n * factorial(n-1)
+}
+p(factorial(5))
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+function factorial_1(n_2) {
+  if ((n_2 === 0) || (n_2 === 1)) {
+    return 1;
+  }
+  return (n_2 * factorial_1((n_2 - 1)));
+}
+console.log(factorial_1(5));
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>This factorials example uses words rather than the || symbol for or, and forgoes the parentheses around the return statements.</p>
+  </div>
+
+  <div class="ex">
+    <h2>Recursive Looping</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+l i in [1...5] {
+  l j in i {
+    p("*")
+  }
+  p(" ")
+}
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+for (let i_1 = 1; i_1 <= 5; i_1 += 1) {
+  for (let j_2 = 1; j_2 <= i_1; j_2++) {
+    console.log("*");
+  }
+  console.log(" ");
+}
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>In this example, loops and ranges are easy to declare and is significantly shorter than JavaScript.</p>
+  </div>
+
+  <div class="ex">
+    <h2>Arrays</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+im x: [1...20, *2]
+im y: [[[x]]]
+mu z: y[0][0][0]
+z: [1 2 3 4 5]
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+let x_1 = [1, 2, 4, 8, 16];
+let y_2 = [[[x_1]]];
+let z_3 = y_2[0,0,0];
+z_3 = [1,2,3,4,5];
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>Arrays behave similarly, while ranges and special operations in the arrays are easy to write and understand in PANIC.</p>
+  </div>
+
+  <div class="ex">
+    <h2>Classes</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+c Dog {
+  con(name string)
+  f bark(sound string) -> string {
+    im greet: name + " says " + sound
+    return greet
+  }
+}
+
+im dog: Dog("rocky")
+dog.bark("woof")
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+class Dog_1 {
+  constructor(name_2) {
+    this.name_2 = name_2;
+  }
+  function bark_3(sound_4) {
+    let greet_5 = ((name_2 + " says ") + sound_4);
+    return greet_5;
+  }
+}
+let dog_6 = new Dog_1("rocky");
+dog_6.bark_3("woof");
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>Classes don't require the dedicated initializing of their attributes, unlike JavaScript's this statements. </p>
+  </div>
+
+  <div class="ex">
+    <h2>While Loops</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+mu x: 3
+l x < 100 {
+  if x = 35{
+    break
+  }
+  p(x)
+}
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+let x_1 = 3;
+while (x_1 < 100) {
+  if (x_1 === 35) {
+    break;
+  }
+  console.log(x_1);
+}
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>PANIC doesn't support the keyword while or anything similar, instead l acts as both a for and while loop for simplicity and efficiency.</p>
+  </div>
+
+  <div class="ex">
+    <h2>Cool Features</h2>
+    <table class="examples">
+      <tr>
+        <th>PANIC</th>
+        <th>JS</th>
+      </tr>
+      <tr>
+        <td>
+          <pre><code class="language-panics">
+f cool(x: 10) -> int {
+  r -x
+}
+
+l i in [10...1, -1]{
+  p(i)
+}
+
+im n: 4
+c weird{
+  con(x: n)
+}
+
+im x: [2...10000000000, **2]
+im z: [100000...10, /10]
+im m: [4...2, %2]
+im y: [4.0...4.4, +0.2]
+im a: [4.4...4.0, -0.2]
+im a_1: []
+          </code></pre>
+        </td>
+        <td>
+          <pre><code class="language-javascript">
+function cool_1(x_2 = 10) {
+  return -(x_2 = 10);
+}
+for (let i_3 = 10; i_3 >= 1; i_3 -= 1) {
+  console.log(i_3);
+}
+let n_4 = 4;
+class weird_5 {
+  constructor() {
+    this.x_2 = n_4;
+  }
+}
+let x_2 = [2, 4, 16, 256, 65536, 4294967296];
+let z_6 = [100000, 10000, 1000, 100, 10];
+let m_7 = [4];
+let y_8 = [4, 4.2, 4.4];
+let a_9 = [4.4, 4.2, 4];
+let a_1_10 = [];
+          </code></pre>
+        </td>
+      </tr>
+    </table>
+    <p>PANIC allows for some pretty cool features and interesting operations. Check these out!</p>
+    </div>
+    </div>
+
+    <div class="divider"></div>
+
     <div class="team-block">
       <h1>Meet the Team</h1>
 
