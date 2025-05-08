@@ -18,6 +18,7 @@ export default function generate(program) {
 
   const generators = {
     Program(x) {
+      // maybe change so that this one is the one that outputs
       x.statements.forEach(gen);
     },
     Array(x) {
@@ -197,7 +198,10 @@ export default function generate(program) {
       const args = x.args.map(gen).join(",");
       const obj = gen(x.object);
       const methodName = targetName(x.name);
-      output.push(`${obj}.${methodName}(${args})`);
+      const code = `${obj}.${methodName}(${args})`;
+      // issue here console.log(dog.bark) push to output not right
+      output.push(code);
+      // return code;
     },
   };
 
