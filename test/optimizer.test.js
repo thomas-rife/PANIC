@@ -222,13 +222,8 @@ const tests = [
   ],
   [
     "optimizes when one elif is true",
-    core.ifStatement(
-      false,
-      [],
-      core.elifStmt(true, return1p1),
-      core.elseStmt([])
-    ),
-    return1p1,
+    core.ifStatement(false, [], [core.elifStmt(true, [return1p1])], []),
+    [return1p1],
   ],
   [
     "optimizes constructor calls",
@@ -236,6 +231,26 @@ const tests = [
       callee: x,
     }),
     Object.assign(core.constructorCall([3]), { callee: x }),
+  ],
+  [
+    "passes through if with non-boolean test",
+    core.ifStatement(core.binary("<", x, 1), [core.binary("+", x, 1)], [], []),
+    core.ifStatement(core.binary("<", x, 1), [core.binary("+", x, 1)], [], []),
+  ],
+  [
+    "passes through non-boolean elseif test",
+    core.ifStatement(
+      false,
+      [],
+      [core.elifStmt(core.binary("<", x, 1), [return1p1])],
+      []
+    ),
+    core.ifStatement(
+      false,
+      [],
+      [core.elifStmt(core.binary("<", x, 1), [return1p1])],
+      []
+    ),
   ],
 ];
 
