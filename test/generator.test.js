@@ -186,8 +186,8 @@ const fixtures = [
     constructor(name_2) {
     this.name_2 = name_2;
     }
-    function bark_3(sound_4) {
-    let greet_5 = ((name_2 + " says ") + sound_4);return greet_5;
+    bark_3(sound_4) {
+    let greet_5 = ((this.name_2 + " says ") + sound_4);return greet_5;
     }
     }
     let dog_6 = new Dog_1("rocky");
@@ -258,18 +258,18 @@ const fixtures = [
     `,
   },
   {
-  name: "Range Features",
-  source: `
+    name: "Range Features",
+    source: `
     im x: [16.0...1.0, *0.5]
     im y: [81.0...3.0, **0.5]
     im z: [1.0...3.0, /0.5]
   `,
-  expected: dedent`
+    expected: dedent`
     let x_1 = [16, 8, 4, 2, 1];
     let y_2 = [81, 9, 3];
     let z_3 = [1, 2];
   `,
-},
+  },
 ];
 
 describe("The code generator", () => {

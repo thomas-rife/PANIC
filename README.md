@@ -307,7 +307,7 @@ c Dog {
 # Create a new Dog
 im dog: Dog("rocky")
 
-dog.bark("woof")
+p(dog.bark("woof"))
 ```
 
 </td>

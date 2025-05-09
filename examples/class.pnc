@@ -8,4 +8,4 @@ c Dog{
 }
 
 im dog: Dog("rocky")
-dog.bark("woof")
+p(dog.bark("woof"))

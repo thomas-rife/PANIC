@@ -191,9 +191,21 @@ export default function generate(program) {
     },
     ClassDeclaration(x) {
       classes.push(x.name);
+      let con_args = [];
+      x.constructor.forEach((x) => {
+        x.args.forEach((y) => con_args.push(y.name));
+      });
       let code = `class ${targetName(x.name)} {\n`;
       code += gen(x.constructor[0]);
-      x.methods.map((x) => (code += gen(x)));
+      let methods = [];
+      x.methods.map((x) => methods.push(gen(x)));
+      methods.forEach((x) => {
+        let trimmed = x.replace("function ", "") + "\n";
+        for (const word of con_args) {
+          trimmed = trimmed.replace(word, "this." + word);
+          code += trimmed;
+        }
+      });
       code += `\n}`;
       return code;
     },
