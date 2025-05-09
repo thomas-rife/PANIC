@@ -384,3 +384,12 @@ console.log(x);
 - Can return from any function, regardless of it's return type, but if the function is marked as void, you can not return a value
 - Whenever there is a test, in an if statement or in a while or elsewhere, must have type boolean
 - and others
+
+## List of Optimizations
+
+- constant folding
+- algebraic simplification
+- unreachable code elimination
+- range optimizations
+- dead-code elimination
+- and more
