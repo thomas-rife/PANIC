@@ -35,26 +35,33 @@ const optimizers = {
           return x.value;
         }
         break;
+      case "**":
+        if (x.value > 1 && x.start > x.end) {
+          return [];
+        } else if (x.value < 1 && x.start < x.end) {
+          return [];
+        } else if (x.value === 1) {
+          return x.start;
+        } else if (x.value === 0) {
+          return x.value;
+        }
+        break;
       case "/":
         if (x.value > 1 && x.start < x.end) {
           return [];
         } else if (x.value < 1 && x.start > x.end) {
           return [];
-        } else if ((x.value = 1)) {
+        } else if (x.value === 1) {
           return x.value;
-        } else if ((x.value = 0)) {
+        } else if (x.value === 0) {
           return [];
         }
         break;
-      default:
-        return x;
     }
     return x;
   },
   Array(x) {
-    console.log("here");
     x.elements = x.elements.map(optimize);
-    console.log("wtf", x.elements);
     return x;
   },
   ArrayIndexing(x) {
@@ -125,31 +132,45 @@ const optimizers = {
   },
   IfStatement(x) {
     x.test = optimize(x.test);
-    x.consequent = optimize(x.consequent);
-    x.elseif = optimize(x.elseif);
-    x.otherwise = optimize(x.otherwise);
+    x.consequent = x.consequent.map(optimize);
+    x.elseif = x.elseif.map(optimize);
+    x.otherwise = x.otherwise.map(optimize);
 
     if (x.test === true) {
       return x.consequent;
     } else if (x.test === false) {
-      console.log("what");
-      console.log(x);
-      if (
-        (Array.isArray(x.elseif[0]?.consequent) &&
-          x.elseif[0]?.consequent.length === 0) ||
-        (Array.isArray(x.elseif) && x.elseif.length === 0)
-      ) {
-        console.log(":the");
-        return x.otherwise[0].consequent; //this needs work not correct
+      //  no if else part
+      if (Array.isArray(x.elseif) && x.elseif.length === 0) {
+        // make sure there is an else part
+        if (Array.isArray(x.otherwise) && x.otherwise.length > 0) {
+          return x.otherwise[0].consequent;
+        }
+        return [];
+      }
+      //check for a true in the else if part //check if all else if are false
+      else {
+        if (x.elseif.every((elem) => elem.test === false)) {
+          if (Array.isArray(x.otherwise) && x.otherwise.length > 0) {
+            return x.otherwise[0].consequent;
+          }
+          return [];
+        } else {
+          for (const elem of x.elseif) {
+            if (elem.test === true) {
+              return elem.consequent;
+            }
+          }
+        }
       }
     }
+    return x;
   },
   ElseIF(x) {
-    console.log(x);
+    x.consequent = x.consequent.flatMap(optimize);
+    return x;
   },
   Else(x) {
-    console.log("this is being called");
-    x.consequent = optimize(x.consequent);
+    x.consequent = x.consequent.flatMap(optimize);
     return x;
   },
   WhileStatement(x) {
@@ -175,15 +196,17 @@ const optimizers = {
   },
   Function(x) {
     if (x.body) x.body = x.body.flatMap(optimize);
+    return x;
   },
   ReturnStatement(x) {
     if (x.expression) x.expression = optimize(x.expression);
+    return x;
   },
   BreakStatement(x) {
     return x;
   },
   FunctionCall(x) {
-    x.callee = optimize(x.callee);
+    // x.callee = optimize(x.callee); //creates infinite loop with recursive calls
     x.args = x.args.map(optimize);
     return x;
   },
@@ -195,7 +218,7 @@ const optimizers = {
   },
   MethodCall(x) {
     x.object = optimize(x.object);
+    x.args = x.args.map(optimize);
     return x;
-    //why no optimize args
   },
 };

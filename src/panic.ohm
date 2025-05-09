@@ -77,7 +77,7 @@ numLit =  digit+ "." digit+ --float
 
 ArrayLiteral =  "[" (ArrayLiteral | Exp)* "]"
 
-  RangeExp             = "[" numRange ("," ("+" | "-" | "/" | "**" | "*" | "%") numLit+)? "]"
+  RangeExp             = "[" numRange ("," ("+" | "-" | "/" | "**" | "*") numLit+)? "]"
   numRange          = (numLit| id) through (numLit | id)
   through           = "..."
  
