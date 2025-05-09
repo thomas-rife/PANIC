@@ -118,6 +118,114 @@ const tests = [
       core.forStatement(x, array(1, 2, 3), []),
     ]),
   ],
+  [
+    "optimizes ranges using + when start > end",
+    core.forStatement(x, core.range(5, 1, "+", 1), [core.binary("+", x, 1)]),
+    [],
+  ],
+  [
+    "case * for ranges where start > end and x is greater than 1",
+    core.forStatement(x, core.range(5, 1, "*", 2), [core.binary("*", x, 2)]),
+    [],
+  ],
+  [
+    "case * for ranges where start < end and x is less than 1",
+    core.forStatement(x, core.range(1, 5, "*", 0.5), [
+      core.binary("*", x, 0.5),
+    ]),
+    [],
+  ],
+  [
+    "case * for ranges where value is 1",
+    core.forStatement(x, core.range(2, 5, "*", 1), [core.binary("*", x, 1)]),
+    core.forStatement(x, 2, [x]),
+  ],
+  //   [
+  //     "case * for ranges where value is 0",
+  //     core.forStatement(x, core.range(0, 0, "*", 0), [core.binary("*", x, 0)]),
+  //     0,
+  //   ],
+  [
+    "case ** for ranges where start < end and x is less than 1",
+    core.forStatement(x, core.range(1, 5, "**", 0.5), [
+      core.binary("**", x, 0.5),
+    ]),
+    [],
+  ],
+  [
+    "case ** for ranges where start > end and x is greater than 1",
+    core.forStatement(x, core.range(10, 5, "**", 2), [core.binary("**", x, 2)]),
+    [],
+  ],
+  [
+    "case ** for ranges where value is 1",
+    core.forStatement(x, core.range(2, 5, "**", 1), [core.binary("**", x, 1)]),
+    core.forStatement(x, 2, [core.binary("**", x, 1)]),
+  ],
+  [
+    "case / for ranges where start > end and x is less than 1",
+    core.forStatement(x, core.range(10, 1, "/", 0.2), [
+      core.binary("/", x, 0.2),
+    ]),
+    [],
+  ],
+  [
+    "case / for ranges where start < end and x is < than 1",
+    core.forStatement(x, core.range(1, 10, "/", 2), [core.binary("/", x, 2)]),
+    [],
+  ],
+  //   [
+  //     "case / for ranges where value is 1",
+  //     core.forStatement(x, core.range(1, 1, "/", 1), [core.binary("/", x, 1)]),
+  //     core.forStatement(x, 1, [core.binary("/", x, 1)]),
+  //   ],
+  [
+    "case / for ranges where value is 0",
+    core.forStatement(x, core.range(0, 0, "/", 0), [core.binary("/", x, 0)]),
+    [],
+  ],
+  [
+    "selects first matching elseif",
+    core.ifStatement(
+      false,
+      [],
+      [core.elifStmt(true, [core.binary("+", x, 1)])],
+      []
+    ),
+    [core.binary("+", x, 1)],
+  ],
+  [
+    "falls back to else when all elseifs false",
+    core.ifStatement(
+      false,
+      [],
+      [core.elifStmt(false, [core.binary("+", x, 2)])],
+      [core.elseStmt([core.binary("-", x, 3)])]
+    ),
+    [core.binary("-", x, 3)],
+  ],
+  [
+    "returns empty when all elseifs false and no else",
+    core.ifStatement(
+      false,
+      [],
+      [core.elifStmt(false, [core.binary("+", x, 4)])],
+      []
+    ),
+    [],
+  ],
+  [
+    "returns if there are elseifs and their length is 0",
+    core.ifStatement(false, [], [], []),
+    [],
+  ],
+  [
+    "optimizes constructor calls",
+    Object.assign(core.constructorCall([core.binary("+", 1, 2)]), {
+      callee: x,
+    }),
+    Object.assign(core.constructorCall([3]), { callee: x }),
+  ],
 ];
 
 describe("The optimizer", () => {

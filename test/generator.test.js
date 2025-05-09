@@ -257,6 +257,19 @@ const fixtures = [
     let a_1_9 = [];
     `,
   },
+  {
+  name: "Range Features",
+  source: `
+    im x: [16.0...1.0, *0.5]
+    im y: [81.0...3.0, **0.5]
+    im z: [1.0...3.0, /0.5]
+  `,
+  expected: dedent`
+    let x_1 = [16, 8, 4, 2, 1];
+    let y_2 = [81, 9, 3];
+    let z_3 = [1, 2];
+  `,
+},
 ];
 
 describe("The code generator", () => {
