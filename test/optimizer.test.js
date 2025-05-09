@@ -140,11 +140,16 @@ const tests = [
     core.forStatement(x, core.range(2, 5, "*", 1), [core.binary("*", x, 1)]),
     core.forStatement(x, 2, [x]),
   ],
-  //   [
-  //     "case * for ranges where value is 0",
-  //     core.forStatement(x, core.range(0, 0, "*", 0), [core.binary("*", x, 0)]),
-  //     0,
-  //   ],
+  [
+    "case * for ranges where value is 0",
+    core.forStatement(x, core.range(0, 0, "*", 0), [core.binary("*", x, 0)]),
+    [],
+  ],
+  [
+    "case ** for ranges where value is 0",
+    core.forStatement(x, core.range(0, 0, "**", 0), [core.binary("*", x, 0)]),
+    [],
+  ],
   [
     "case ** for ranges where start < end and x is less than 1",
     core.forStatement(x, core.range(1, 5, "**", 0.5), [
@@ -174,11 +179,7 @@ const tests = [
     core.forStatement(x, core.range(1, 10, "/", 2), [core.binary("/", x, 2)]),
     [],
   ],
-  //   [
-  //     "case / for ranges where value is 1",
-  //     core.forStatement(x, core.range(1, 1, "/", 1), [core.binary("/", x, 1)]),
-  //     core.forStatement(x, 1, [core.binary("/", x, 1)]),
-  //   ],
+  ["case / for ranges where value is 1", core.range(10, 1, "/", 1), 10],
   [
     "case / for ranges where value is 0",
     core.forStatement(x, core.range(0, 0, "/", 0), [core.binary("/", x, 0)]),
@@ -218,6 +219,16 @@ const tests = [
     "returns if there are elseifs and their length is 0",
     core.ifStatement(false, [], [], []),
     [],
+  ],
+  [
+    "optimizes when one elif is true",
+    core.ifStatement(
+      false,
+      [],
+      core.elifStmt(true, return1p1),
+      core.elseStmt([])
+    ),
+    return1p1,
   ],
   [
     "optimizes constructor calls",

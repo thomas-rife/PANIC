@@ -32,7 +32,7 @@ const optimizers = {
         } else if (x.value === 1) {
           return x.start;
         } else if (x.value === 0) {
-          return x.value;
+          return [];
         }
         break;
       case "**":
@@ -43,7 +43,7 @@ const optimizers = {
         } else if (x.value === 1) {
           return x.start;
         } else if (x.value === 0) {
-          return x.value;
+          return [];
         }
         break;
       case "/":
@@ -52,7 +52,7 @@ const optimizers = {
         } else if (x.value < 1 && x.start > x.end) {
           return [];
         } else if (x.value === 1) {
-          return x.value;
+          return x.start;
         } else if (x.value === 0) {
           return [];
         }
@@ -155,6 +155,7 @@ const optimizers = {
           }
           return [];
         } else {
+          console.log("yuhh correct structure");
           for (const elem of x.elseif) {
             if (elem.test === true) {
               return elem.consequent;
